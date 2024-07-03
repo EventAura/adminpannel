@@ -190,7 +190,7 @@ const LoginPage = () => {
           <p href="javascript:void(0)" className="text-indigo-100">
             Forgot password? <br />
             <a
-              href="https://tesract.vercel.app/Contact-Us"
+              href="https://eventaura.tech/Contact-Us"
               className="text-indigo-600"
             >
               contact Us{" "}
