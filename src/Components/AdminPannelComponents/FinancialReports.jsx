@@ -105,8 +105,11 @@ const FinancialReports = () => {
                   <td className="py-4 px-6 border-b border-gray-600">
                     ₹
                     {(
-                      numParticipants *
-                      (eventData?.eventPrice * 0.02 + 5)
+                      numParticipants * eventData?.eventPrice -
+                      (
+                        numParticipants *
+                        (eventData?.eventPrice * 0.02 + 5)
+                      ).toFixed(2)
                     ).toFixed(2)}
                   </td>
                 </tr>
