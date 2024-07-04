@@ -104,10 +104,8 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Payment Gateway Transcation ID (PG):{" "}
                     <span className="font-semibold text-gray-50">
-                      {value?.paymentData?.data?.paymentInstrument
-                        ?.pgTransactionId
-                        ? value?.paymentData?.data?.paymentInstrument
-                            ?.pgTransactionId
+                      {value?.paymentData?.data?.merchantTransactionId
+                        ? value?.paymentData?.data?.merchantTransactionId
                         : "Payment Failed"}{" "}
                     </span>
                   </p>

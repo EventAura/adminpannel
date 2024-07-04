@@ -114,7 +114,10 @@ const Overview = () => {
                     ₹
                     {totalSales(
                       eventData?.eventPrice,
-                      eventParticipants.length
+                      eventParticipants.filter(
+                        (participant) =>
+                          participant.paymentData?.data?.state === "COMPLETED"
+                      ).length
                     )}
                   </span>
                   <div className="flex flex-col text-sm text-gray-300">
@@ -183,31 +186,26 @@ const Overview = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {eventParticipants
-                      .slice(
-                        eventParticipants.length - 5,
-                        eventParticipants.length
-                      )
-                      .map((participant, index) => (
-                        <tr key={index} className="hover:bg-gray-600">
-                          <td className="border px-4 py-2 border-gray-500">
-                            {participant.name}
-                          </td>
-                          <td className="border px-4 py-2 border-gray-500">
-                            {participant.email}
-                          </td>
-                          <td className="border px-4 py-2 border-gray-500">
-                            {participant.paymentData?.data?.state
-                              ? "Paid"
-                              : "Failed"}
-                          </td>
-                          <td className="border px-4 py-2 border-gray-500">
-                            {participant.paymentData?.data?.transactionId
-                              ? participant.paymentData?.data?.transactionId
-                              : "NULL"}
-                          </td>
-                        </tr>
-                      ))}
+                    {eventParticipants.slice(0, 5).map((participant, index) => (
+                      <tr key={index} className="hover:bg-gray-600">
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.name}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.email}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.paymentData?.data?.state
+                            ? "Paid"
+                            : "Failed"}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.paymentData?.data?.transactionId
+                            ? participant.paymentData?.data?.transactionId
+                            : "NULL"}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
