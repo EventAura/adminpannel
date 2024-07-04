@@ -8,7 +8,9 @@ const FinancialReports = () => {
   const [eventData, setEventData] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [datesList, setDatesList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Function to generate list of dates between start and end date
   const DateList = (start, end) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
@@ -23,37 +25,39 @@ const FinancialReports = () => {
   };
 
   useEffect(() => {
-    const fetchApi = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(
+        const eventResponse = await axios.get(
           `https://tesract-server.onrender.com/event/${eventSelector?.eventId}`
         );
-        console.log("Event Data:", response.data.data);
-        setEventData(response.data.data);
-      } catch (error) {
-        console.log("Error fetching event data:", error);
-      }
-    };
+        console.log("Event Data:", eventResponse.data.data);
+        setEventData(eventResponse.data.data);
 
-    const fetchParticipantsApi = async () => {
-      try {
-        const response = await axios.get(
+        const participantsResponse = await axios.get(
           `https://tesract-server.onrender.com/participants/event/${eventSelector?.eventId}`
         );
-        console.log("Participants Data:", response.data);
-        setParticipants(response.data);
+        console.log("Participants Data:", participantsResponse.data);
+        setParticipants(participantsResponse.data);
+
+        if (
+          eventResponse.data.data?.eventCreatedDate &&
+          eventResponse.data.data?.eventLastDate
+        ) {
+          DateList(
+            eventResponse.data.data.eventCreatedDate,
+            eventResponse.data.data.eventLastDate
+          );
+        }
       } catch (error) {
-        console.log("Error fetching participants data:", error);
+        console.log("Error fetching data:", error);
       }
     };
 
-    if (eventData?.eventCreatedDate && eventData?.eventLastDate) {
-      DateList(eventData.eventCreatedDate, eventData.eventLastDate);
+    if (eventSelector?.eventId) {
+      fetchData();
+      setLoading(false);
     }
-
-    fetchApi();
-    fetchParticipantsApi();
-  }, [eventSelector?.eventId]);
+  }, [eventSelector?.eventId]); // Dependency array to re-run effect when eventSelector?.eventId changes
 
   // Function to count participants registered on a specific date
   const countParticipantsForDate = (date) => {
@@ -62,6 +66,7 @@ const FinancialReports = () => {
     ).length;
   };
 
+  if (loading) return;
   return (
     <>
       <h1 className="text-3xl text-center text-indigo-600 my-5 font-semibold">
