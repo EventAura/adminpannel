@@ -3,12 +3,21 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { format, eachDayOfInterval, parseISO, isSameDay } from "date-fns";
 
+import * as XLSX from "xlsx";
+import { FiDownload } from "react-icons/fi";
+
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+
 const FinancialReports = () => {
   const eventSelector = useSelector((state) => state.eventId.value);
   const [eventData, setEventData] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [datesList, setDatesList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+
+
 
   // Function to generate list of dates between start and end date
   const DateList = (start, end) => {
@@ -30,14 +39,28 @@ const FinancialReports = () => {
         const eventResponse = await axios.get(
           `https://tesract-server.onrender.com/event/${eventSelector?.eventId}`
         );
-        console.log("Event Data:", eventResponse.data.data);
+        // console.log("Event Data:", eventResponse.data.data);
         setEventData(eventResponse.data.data);
 
-        const participantsResponse = await axios.get(
-          `https://tesract-server.onrender.com/participants/event/${eventSelector?.eventId}`
-        );
-        console.log("Participants Data:", participantsResponse.data);
-        setParticipants(participantsResponse.data);
+
+        // const participantsResponse = await axios.get(
+        //   `https://tesract-server.onrender.com/participants/event/${eventSelector?.eventId}`
+        // );
+        // // console.log("Participants Data:", participantsResponse.data);
+        // setParticipants(participantsResponse.data);
+        const fetchParticipantsApi = async () => {
+          try {
+            const response = await axios.get(
+              `https://tesract-server.onrender.com/participants/event/${eventSelector.eventId}`
+            );
+            setParticipants(response.data);
+            setLoading(false);
+            console.log(response.data);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        fetchParticipantsApi();
 
         if (
           eventResponse.data.data?.eventCreatedDate &&
@@ -60,10 +83,72 @@ const FinancialReports = () => {
   }, [eventSelector?.eventId]); // Dependency array to re-run effect when eventSelector?.eventId changes
 
   // Function to count participants registered on a specific date
+  //
   const countParticipantsForDate = (date) => {
     return participants.filter((participant) =>
       isSameDay(new Date(participant.userRegistrationDate), date)
+      // && participant.paymentData?.state === "COMPLETED"
+      && participant.paymentData?.data?.state === "COMPLETED"
+
+
+
     ).length;
+
+  };
+  const downloadExcel = () => {
+    const data = datesList.map((date) => {
+      const numParticipants = countParticipantsForDate(date);
+      if (numParticipants > 0) {
+        return {
+          Date: date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
+          Participants: numParticipants,
+          Amount: (
+            numParticipants * eventData?.eventPrice -
+            numParticipants * (eventData?.eventPrice * 0.02 + 5)
+          ).toFixed(2),
+        };
+      }
+      return null;
+    }).filter(Boolean);
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Financial Report");
+
+    XLSX.writeFile(workbook, "Financial_Report.xlsx");
+  };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    const tableData = datesList.map((date) => {
+      const numParticipants = countParticipantsForDate(date);
+      if (numParticipants > 0) {
+        return [
+          date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
+          numParticipants,
+          (
+            numParticipants * eventData?.eventPrice -
+            numParticipants * (eventData?.eventPrice * 0.02 + 5)
+          ).toFixed(2),
+        ];
+      }
+      return null;
+    }).filter(Boolean);
+
+    doc.autoTable({
+      head: [["Date", "Participants", "Amount"]],
+      body: tableData,
+    });
+
+    doc.save("Financial_Report.pdf");
   };
 
   if (loading) return;
@@ -72,6 +157,22 @@ const FinancialReports = () => {
       <h1 className="text-3xl text-center text-indigo-600 my-5 font-semibold">
         Financial reports
       </h1>
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={downloadExcel}
+          className="text-white bg-indigo-600 p-2 rounded-md hover:bg-indigo-700 flex items-center mr-2"
+        >
+          <FiDownload className="mr-2" />
+          Download Excel
+        </button>
+        <button
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center hover:bg-blue-600"
+          onClick={downloadPDF}
+        >
+          <FiDownload className="mr-2" />
+          Download PDF
+        </button>
+      </div>
       <table className="min-w-full bg-gray-800 text-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-700">
           <tr>

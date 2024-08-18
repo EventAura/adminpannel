@@ -112,10 +112,10 @@ const LoginPage = () => {
             />
             <button
               type="button"
-              className="absolute inset-y-0 right-0 flex items-center px-3 mr-2 text-gray-500 hover:text-gray-600 focus:outline-none"
+              className="absolute inset-y-0 mt-8 right-0 flex items-center px-3 mr-2 text-gray-500 hover:text-gray-600 focus:outline-none"
               onClick={togglePasswordVisibility}
             >
-              {showPassword ? (
+              {/* {showPassword ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -148,7 +148,36 @@ const LoginPage = () => {
                   />
                   <path d="M10 0c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z" />
                 </svg>
+              )} */}
+              {showPassword ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path d="M4.318 4.318a9.5 9.5 0 0113.364 13.364L4.318 4.318z" />
+                  <path d="M15.682 15.682a9.5 9.5 0 01-13.364-13.364L15.682 15.682z" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path d="M10 0c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z" />
+                </svg>
               )}
+
             </button>
           </div>
           <div className=" text-red-600 font-semibold">{error}</div>

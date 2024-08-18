@@ -3,6 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ParticipantsModel from "./utils/ParticipantsModel";
 
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+
+import * as XLSX from "xlsx";
+
 const Participants = () => {
   const eventSelector = useSelector((state) => state.eventId.value);
   const [participants, setParticipants] = useState([]);
@@ -10,6 +15,8 @@ const Participants = () => {
   const [modal, setModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+
+
 
   const openModal = (participant) => {
     setModelParticipant(participant);
@@ -41,6 +48,50 @@ const Participants = () => {
   const filteredParticipants = participants.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const downloadExcel = () => {
+    const data = filteredParticipants.map((item) => ({
+      Name: item.name,
+      Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      Status: item?.paymentData?.data?.state === "COMPLETED" ? "Completed" : "Failed",
+      "Transaction ID": item?.paymentData?.data?.transactionId,
+      Email: item?.email,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
+
+    XLSX.writeFile(workbook, "Participants_Report.xlsx");
+  };
+
+  // Function to download participants data as PDF file
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    const tableData = filteredParticipants.map((item) => [
+      item.name,
+      new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      item?.paymentData?.data?.state === "COMPLETED" ? "Completed" : "Failed",
+      item?.paymentData?.data?.transactionId,
+      item?.email,
+    ]);
+
+    doc.autoTable({
+      head: [["Name", "Date", "Status", "Transaction ID", "Email"]],
+      body: tableData,
+    });
+
+    doc.save("Participants_Report.pdf");
+  };
+
   if (loading) {
     return (
       <>
@@ -113,6 +164,21 @@ const Participants = () => {
           />
         </div>
 
+        <div className="mt-6 flex justify-end">
+          <button
+            className="text-white bg-indigo-600 p-2 rounded-md hover:bg-indigo-700 flex items-center mr-2"
+            onClick={downloadExcel}
+          >
+            Download Excel
+          </button>
+          <button
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center hover:bg-blue-600"
+            onClick={downloadPDF}
+          >
+            Download PDF
+          </button>
+        </div>
+
         <div className="mt-6 relative h-max overflow-auto">
           <table className="w-full table-auto text-sm text-left">
             <thead className="text-gray-100 font-medium border-b">
@@ -141,11 +207,10 @@ const Participants = () => {
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-3 py-2 rounded-full font-semibold text-xs ${
-                        item?.paymentData?.data?.state === "COMPLETED"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
+                      className={`px-3 py-2 rounded-full font-semibold text-xs ${item?.paymentData?.data?.state === "COMPLETED"
+                        ? "text-green-500"
+                        : "text-red-500"
+                        }`}
                     >
                       {item?.paymentData?.data?.state === "COMPLETED"
                         ? "Completed"

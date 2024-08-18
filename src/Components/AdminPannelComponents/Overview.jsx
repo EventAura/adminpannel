@@ -7,6 +7,16 @@ const Overview = () => {
   const [eventData, setEventData] = useState(null);
   const [eventParticipants, setEventParticipants] = useState([]);
 
+
+  eventParticipants.filter(
+    (participant) =>
+      console.log(participant.paymentData?.data?.state === "COMPLETED")
+  ).length
+
+
+
+
+
   const totalSales = (price, totalParticipants) => {
     const totalRevenue = price * totalParticipants;
 
@@ -37,7 +47,7 @@ const Overview = () => {
           `https://tesract-server.onrender.com/event/${eventSelector.eventId}`
         );
         setEventData(response.data.data);
-        console.log(response.data.data);
+        // console.log(response.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -48,9 +58,9 @@ const Overview = () => {
           `https://tesract-server.onrender.com/participants/event/${eventSelector.eventId}`
         );
         setEventParticipants(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
     fetchApi();
