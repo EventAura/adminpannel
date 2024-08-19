@@ -17,6 +17,10 @@ const FinancialReports = () => {
   const [loading, setLoading] = useState(true);
 
 
+  // console.log(participants[0].paymentData?.data?.state === "COMPLETED")
+
+
+
 
 
   // Function to generate list of dates between start and end date
@@ -24,6 +28,7 @@ const FinancialReports = () => {
     const startDate = new Date(start);
     const endDate = new Date(end);
     const tempDatesList = [];
+    console.log(tempDatesList)
 
     while (startDate <= endDate) {
       tempDatesList.push(new Date(startDate.toISOString())); // Store Date objects
@@ -55,7 +60,7 @@ const FinancialReports = () => {
             );
             setParticipants(response.data);
             setLoading(false);
-            console.log(response.data);
+            // console.log(response.data);
           } catch (error) {
             console.log(error);
           }
@@ -86,6 +91,7 @@ const FinancialReports = () => {
   //
   const countParticipantsForDate = (date) => {
     return participants.filter((participant) =>
+
       isSameDay(new Date(participant.userRegistrationDate), date)
       // && participant.paymentData?.state === "COMPLETED"
       && participant.paymentData?.data?.state === "COMPLETED"
@@ -191,9 +197,11 @@ const FinancialReports = () => {
           {datesList.map((date, index) => {
             const numParticipants = countParticipantsForDate(date);
             if (numParticipants > 0) {
+
               return (
                 <tr key={index} className="hover:bg-gray-700">
                   <td className="py-4 px-6 border-b border-gray-600">
+                    {console.log("Date:", date)}
                     {date.toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
@@ -205,6 +213,7 @@ const FinancialReports = () => {
                   </td>
                   <td className="py-4 px-6 border-b border-gray-600">
                     ₹
+
                     {(
                       numParticipants * eventData?.eventPrice -
                       (
