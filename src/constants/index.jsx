@@ -111,7 +111,7 @@ export const navigation = [
 
 export const navsFooter = [
   {
-    href: "javascript:void(0)",
+    href: "/secure/v3/dasboard/help",
     name: "Help",
     icon: (
       <svg

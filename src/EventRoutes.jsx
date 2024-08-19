@@ -8,6 +8,7 @@ import Participants from "./Components/AdminPannelComponents/Participants";
 import FinancialReports from "./Components/AdminPannelComponents/FinancialReports";
 import EventDetailsChange from "./Components/AdminPannelComponents/EventDetailsChange";
 import MailParticipants from "./Components/AdminPannelComponents/MailParticipants";
+import Help from "./Components/Help";
 
 const EventRoutes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -62,6 +63,8 @@ const EventRoutes = () => {
             path="/secure/v3/dasboard/mail-to-participants/:id"
             element={<MailParticipants />}
           />
+          <Route path={`/secure/v3/dasboard/help/${eventId}`}
+            element={<Help />} />
           <Route
             path="/"
             element={<Navigate to={`/secure/v3/dasboard/login/${eventId}`} />}

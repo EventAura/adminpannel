@@ -12,15 +12,13 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       <div
-        className={`fixed inset-0 bg-gray-950 bg-opacity-50 z-40 transition-opacity duration-300 sm:hidden ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-gray-950 bg-opacity-50 z-40 transition-opacity duration-300 sm:hidden ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
         onClick={toggleSidebar}
       ></div>
       <nav
-        className={`fixed top-0 left-0 h-full bg-gray-950 space-y-8 w-64 sm:w-64 transform transition-transform duration-300 z-50 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } sm:translate-x-0`}
+        className={`fixed top-0 left-0 h-full bg-gray-950 space-y-8 w-64 sm:w-64 transform transition-transform duration-300 z-50 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          } sm:translate-x-0`}
       >
         <div className="flex flex-col h-full">
           <div className="h-20 flex items-center px-8">
@@ -55,6 +53,7 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
                     </Link>
                   </li>
                 ))}
+
               </ul>
             </div>
           </div>
