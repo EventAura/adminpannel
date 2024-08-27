@@ -52,7 +52,8 @@ const Help = () => {
                                                 />
                                             </svg>
                                         </div>
-                                        <p>Support@eventaura.tech</p>
+                                        <a href= "mailto: support@eventaura.tech">Support@eventaura.tech</a>
+                                        {/* <p>Support@eventaura.tech</p> */}
                                     </li>
                                     <li className="flex items-center gap-x-3">
                                         <div className="flex-none text-gray-400">
