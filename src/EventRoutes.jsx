@@ -7,7 +7,7 @@ import Overview from "./Components/AdminPannelComponents/Overview";
 import Participants from "./Components/AdminPannelComponents/Participants";
 import FinancialReports from "./Components/AdminPannelComponents/FinancialReports";
 import EventDetailsChange from "./Components/AdminPannelComponents/EventDetailsChange";
-import MailParticipants from "./Components/AdminPannelComponents/MailParticipants";
+// import MailParticipants from "./Components/AdminPannelComponents/MailParticipants";
 import Help from "./Components/Help";
 
 const EventRoutes = () => {
@@ -59,10 +59,10 @@ const EventRoutes = () => {
             path="/secure/v3/dasboard/change-event-details/:id"
             element={<EventDetailsChange />}
           />
-          <Route
+          {/* <Route
             path="/secure/v3/dasboard/mail-to-participants/:id"
             element={<MailParticipants />}
-          />
+          /> */}
           <Route path={`/secure/v3/dasboard/help/${eventId}`}
             element={<Help />} />
           <Route
