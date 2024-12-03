@@ -114,7 +114,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                     <span className="font-semibold text-gray-50">
                       {value?.userEntryStatus == "false" ? (
                         <>
-                          <div>Not Entered the evnet</div>
+                          <div>Not Entered the event</div>
                         </>
                       ) : (
                         <>In the Event !</>
