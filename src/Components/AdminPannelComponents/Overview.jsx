@@ -1,5 +1,3 @@
-
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -34,7 +32,8 @@ const Overview = () => {
     const percentageDeduction = totalRevenue * 0.02;
     const fixedDeduction = totalParticipants * 5;
 
-    const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
+    // const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
+    const finalTotal = totalRevenue;
 
     return finalTotal.toLocaleString();
   };
@@ -93,8 +92,13 @@ const Overview = () => {
     const dateMap = {};
 
     participants.forEach((participant) => {
-      const registrationDate = new Date(participant.userRegistrationDate).toDateString();
-      const paymentAmount = participant.paymentData?.data?.state === "COMPLETED" ? parseFloat(eventData.eventPrice || 0) : 0;
+      const registrationDate = new Date(
+        participant.userRegistrationDate
+      ).toDateString();
+      const paymentAmount =
+        participant.paymentData?.data?.state === "COMPLETED"
+          ? parseFloat(eventData.eventPrice || 0)
+          : 0;
 
       if (dateMap[registrationDate]) {
         dateMap[registrationDate].participants += 1;
@@ -194,11 +198,13 @@ const Overview = () => {
               </h2>
               <div className="flex items-center space-x-4">
                 <span className="text-4xl font-extrabold text-purple-500">
-                  {getTodayParticipants(
-                    eventParticipants,
-                    eventData?.eventCreatedDate,
-                    eventData?.eventLastDate
-                  ).length}
+                  {
+                    getTodayParticipants(
+                      eventParticipants,
+                      eventData?.eventCreatedDate,
+                      eventData?.eventLastDate
+                    ).length
+                  }
                 </span>
                 <div className="flex flex-col text-sm text-gray-300">
                   <span className="leading-tight">New</span>
@@ -216,7 +222,11 @@ const Overview = () => {
                   Participants by Date
                 </h2>
                 {participantsChartData.length > 0 && (
-                  <BarChart data={participantsChartData} xAxisLabel="Date" yAxisLabel="Number of Participants" />
+                  <BarChart
+                    data={participantsChartData}
+                    xAxisLabel="Date"
+                    yAxisLabel="Number of Participants"
+                  />
                 )}
               </div>
 

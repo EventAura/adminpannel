@@ -16,19 +16,14 @@ const FinancialReports = () => {
   const [datesList, setDatesList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
   // console.log(participants[0].paymentData?.data?.state === "COMPLETED")
-
-
-
-
 
   // Function to generate list of dates between start and end date
   const DateList = (start, end) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
     const tempDatesList = [];
-    console.log(tempDatesList)
+    console.log(tempDatesList);
 
     while (startDate <= endDate) {
       tempDatesList.push(new Date(startDate.toISOString())); // Store Date objects
@@ -46,7 +41,6 @@ const FinancialReports = () => {
         );
         // console.log("Event Data:", eventResponse.data.data);
         setEventData(eventResponse.data.data);
-
 
         // const participantsResponse = await axios.get(
         //   `https://tesract-server.onrender.com/participants/event/${eventSelector?.eventId}`
@@ -90,36 +84,34 @@ const FinancialReports = () => {
   // Function to count participants registered on a specific date
   //
   const countParticipantsForDate = (date) => {
-    return participants.filter((participant) =>
-
-      isSameDay(new Date(participant.userRegistrationDate), date)
-      // && participant.paymentData?.state === "COMPLETED"
-      && participant.paymentData?.data?.state === "COMPLETED"
-
-
-
+    return participants.filter(
+      (participant) =>
+        isSameDay(new Date(participant.userRegistrationDate), date) &&
+        // && participant.paymentData?.state === "COMPLETED"
+        participant.paymentData?.data?.state === "COMPLETED"
     ).length;
-
   };
   const downloadExcel = () => {
-    const data = datesList.map((date) => {
-      const numParticipants = countParticipantsForDate(date);
-      if (numParticipants > 0) {
-        return {
-          Date: date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          }),
-          Participants: numParticipants,
-          Amount: (
-            numParticipants * eventData?.eventPrice -
-            numParticipants * (eventData?.eventPrice * 0.02 + 5)
-          ).toFixed(2),
-        };
-      }
-      return null;
-    }).filter(Boolean);
+    const data = datesList
+      .map((date) => {
+        const numParticipants = countParticipantsForDate(date);
+        if (numParticipants > 0) {
+          return {
+            Date: date.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            }),
+            Participants: numParticipants,
+            // numParticipants * eventData?.eventPrice -
+            Amount:
+              // numParticipants * (eventData?.eventPrice * 0.02 + 5)
+              (numParticipants * eventData?.eventPrice).toFixed(2),
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -130,24 +122,25 @@ const FinancialReports = () => {
 
   const downloadPDF = () => {
     const doc = new jsPDF();
-    const tableData = datesList.map((date) => {
-      const numParticipants = countParticipantsForDate(date);
-      if (numParticipants > 0) {
-        return [
-          date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          }),
-          numParticipants,
-          (
-            numParticipants * eventData?.eventPrice -
-            numParticipants * (eventData?.eventPrice * 0.02 + 5)
-          ).toFixed(2),
-        ];
-      }
-      return null;
-    }).filter(Boolean);
+    const tableData = datesList
+      .map((date) => {
+        const numParticipants = countParticipantsForDate(date);
+        if (numParticipants > 0) {
+          return [
+            date.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            }),
+            numParticipants,
+            // numParticipants * eventData?.eventPrice -
+            // numParticipants * (eventData?.eventPrice * 0.02 + 5)
+            (numParticipants * eventData?.eventPrice).toFixed(2),
+          ];
+        }
+        return null;
+      })
+      .filter(Boolean);
 
     doc.autoTable({
       head: [["Date", "Participants", "Amount"]],
@@ -197,7 +190,6 @@ const FinancialReports = () => {
           {datesList.map((date, index) => {
             const numParticipants = countParticipantsForDate(date);
             if (numParticipants > 0) {
-
               return (
                 <tr key={index} className="hover:bg-gray-700">
                   <td className="py-4 px-6 border-b border-gray-600">
@@ -213,14 +205,14 @@ const FinancialReports = () => {
                   </td>
                   <td className="py-4 px-6 border-b border-gray-600">
                     ₹
-
-                    {(
+                    {/* {(
                       numParticipants * eventData?.eventPrice -
                       (
                         numParticipants *
                         (eventData?.eventPrice * 0.02 + 5)
                       ).toFixed(2)
-                    ).toFixed(2)}
+                    ).toFixed(2)} */}
+                    {(numParticipants * eventData?.eventPrice).toFixed(2)}
                   </td>
                 </tr>
               );
