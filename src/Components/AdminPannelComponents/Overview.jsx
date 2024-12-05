@@ -33,7 +33,7 @@ const Overview = () => {
     const fixedDeduction = totalParticipants * 5;
 
     // const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
-    const finalTotal = totalRevenue;
+    const finalTotal = totalRevenue - percentageDeduction;
 
     return finalTotal.toLocaleString();
   };

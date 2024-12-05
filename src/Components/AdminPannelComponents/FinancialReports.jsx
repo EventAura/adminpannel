@@ -103,10 +103,12 @@ const FinancialReports = () => {
               day: "numeric",
             }),
             Participants: numParticipants,
-            // numParticipants * eventData?.eventPrice -
             Amount:
+              // numParticipants * eventData?.eventPrice -
               // numParticipants * (eventData?.eventPrice * 0.02 + 5)
-              (numParticipants * eventData?.eventPrice).toFixed(2),
+              // (numParticipants * eventData?.eventPrice).toFixed(2),
+              numParticipants * eventData?.eventPrice -
+              numParticipants * (eventData?.eventPrice * 0.02).toFixed(2),
           };
         }
         return null;
@@ -135,7 +137,9 @@ const FinancialReports = () => {
             numParticipants,
             // numParticipants * eventData?.eventPrice -
             // numParticipants * (eventData?.eventPrice * 0.02 + 5)
-            (numParticipants * eventData?.eventPrice).toFixed(2),
+            // (numParticipants * eventData?.eventPrice).toFixed(2),
+            numParticipants * eventData?.eventPrice -
+              numParticipants * (eventData?.eventPrice * 0.02).toFixed(2),
           ];
         }
         return null;
@@ -212,7 +216,10 @@ const FinancialReports = () => {
                         (eventData?.eventPrice * 0.02 + 5)
                       ).toFixed(2)
                     ).toFixed(2)} */}
-                    {(numParticipants * eventData?.eventPrice).toFixed(2)}
+                    {(
+                      numParticipants * eventData?.eventPrice -
+                      numParticipants * (eventData?.eventPrice * 0.02)
+                    ).toFixed(2)}
                   </td>
                 </tr>
               );
