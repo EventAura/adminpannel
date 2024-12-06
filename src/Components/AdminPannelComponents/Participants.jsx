@@ -16,8 +16,6 @@ const Participants = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-
-
   const openModal = (participant) => {
     setModelParticipant(participant);
     setModal(true);
@@ -57,7 +55,8 @@ const Participants = () => {
         month: "long",
         day: "numeric",
       }),
-      Status: item?.paymentData?.data?.state === "COMPLETED" ? "Completed" : "Failed",
+      Status:
+        item?.paymentData?.data?.state === "COMPLETED" ? "Completed" : "Failed",
       "Transaction ID": item?.paymentData?.data?.transactionId,
       Email: item?.email,
     }));
@@ -207,10 +206,11 @@ const Participants = () => {
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-3 py-2 rounded-full font-semibold text-xs ${item?.paymentData?.data?.state === "COMPLETED"
-                        ? "text-green-500"
-                        : "text-red-500"
-                        }`}
+                      className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                        item?.paymentData?.data?.state === "COMPLETED"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
                     >
                       {item?.paymentData?.data?.state === "COMPLETED"
                         ? "Completed"
@@ -218,7 +218,9 @@ const Participants = () => {
                     </span>
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">
-                    {item?.paymentData?.data?.transactionId.slice(-5)}
+                    {item?.paymentData?.data?.transactionId
+                      ? item.paymentData.data.transactionId.slice(-5)
+                      : "N/A"}
                   </td>
                   <td className="pr-6 py-4 whitespace-nowrap">{item?.email}</td>
                   <td className="text-right whitespace-nowrap">
