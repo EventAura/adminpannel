@@ -9,6 +9,7 @@ import FinancialReports from "./Components/AdminPannelComponents/FinancialReport
 import EventDetailsChange from "./Components/AdminPannelComponents/EventDetailsChange";
 // import MailParticipants from "./Components/AdminPannelComponents/MailParticipants";
 import Help from "./Components/Help";
+import QRScanner from "./Components/AdminPannelComponents/QRScanner";
 
 const EventRoutes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -59,12 +60,18 @@ const EventRoutes = () => {
             path="/secure/v3/dasboard/change-event-details/:id"
             element={<EventDetailsChange />}
           />
+          <Route
+            path="/secure/v3/dasboard/qrcode-scanner"
+            element={<QRScanner />}
+          />
           {/* <Route
             path="/secure/v3/dasboard/mail-to-participants/:id"
             element={<MailParticipants />}
           /> */}
-          <Route path={`/secure/v3/dasboard/help/${eventId}`}
-            element={<Help />} />
+          <Route
+            path={`/secure/v3/dasboard/help/${eventId}`}
+            element={<Help />}
+          />
           <Route
             path="/"
             element={<Navigate to={`/secure/v3/dasboard/login/${eventId}`} />}

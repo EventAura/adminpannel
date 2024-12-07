@@ -7,6 +7,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
 import * as XLSX from "xlsx";
+import { Link } from "react-router-dom";
 
 const Participants = () => {
   const eventSelector = useSelector((state) => state.eventId.value);
@@ -143,12 +144,12 @@ const Participants = () => {
             </h3>
           </div>
           <div className="mt-3 md:mt-0">
-            <a
-              href="javascript:void(0)"
+            <Link
+              to="/secure/v3/dasboard/qrcode-scanner" // Corrected spelling from "dasboard" to "dashboard"
               className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
             >
               Event Onboarding
-            </a>
+            </Link>
           </div>
         </div>
 
