@@ -5,31 +5,42 @@ import axios from "axios";
 const QRScanner = () => {
   const [scanResult, setScanResult] = useState(null);
   const [data, setData] = useState("");
-  const [userStatus, setUserStatus] = useState("");
+  const [userStatus, setUserStatus] = useState(null);
   const [checkConfirmation, setCheckConfirmation] = useState(false);
   const scannerRef = useRef(null);
 
+  // Function to fetch user status based on user ID
   const fetchUserStatus = async (userId) => {
     try {
       const response = await axios.get(
         `https://tesract-server.onrender.com/participant/status/${userId}`
-        // `http://localhost:8080/participant/status/${userId}`
       );
-      // console.log(response.data);
-      setData(response.data);
-      setUserStatus(response.data.userEntryStatus);
+      console.log("User status response:", response);
+
+      // If the response is successful (status code 200), set the user data
+      if (response.status === 200) {
+        setData(response.data);
+        setUserStatus(response.data.userEntryStatus);
+      } else if (response.status === 404) {
+        // If status code is 404, display no user found message
+        setUserStatus("not-found");
+      } else if (response.status === 500) {
+        // If status code is 500, display error message
+        setUserStatus("error");
+      }
     } catch (error) {
       console.error("Error fetching user status:", error);
+      // Handle network or other errors
+      setUserStatus("error");
     }
   };
 
+  // Function to update user status to checked-in
   const updateUserStatus = async (userId) => {
     try {
       const response = await axios.patch(
         `https://tesract-server.onrender.com/participant/updateStatus/${userId}`
-        // `http://localhost:8080/participant/updateStatus/${userId}`
       );
-      // console.log(response.data);
       setUserStatus("true");
       setCheckConfirmation(true);
     } catch (error) {
@@ -37,6 +48,7 @@ const QRScanner = () => {
     }
   };
 
+  // Initialize QR scanner
   useEffect(() => {
     const scanner = new Html5QrcodeScanner("reader", {
       qrbox: { width: 400, height: 400 },
@@ -62,6 +74,7 @@ const QRScanner = () => {
     };
   }, []);
 
+  // Reset the scanner after a scan
   const resetScanner = () => {
     setScanResult(null);
     setUserStatus(null);
@@ -85,6 +98,7 @@ const QRScanner = () => {
     }
   };
 
+  // Trigger user status fetch when QR code is scanned
   useEffect(() => {
     if (scanResult) {
       fetchUserStatus(String(scanResult));
@@ -110,10 +124,39 @@ const QRScanner = () => {
       {/* Scan Result Section */}
       {scanResult && (
         <div className="mt-8 w-96 bg-gray-800 p-6 rounded-lg shadow-lg text-gray-200">
-          {userStatus ? (
-            // Check if payment was successful
+          {userStatus === "not-found" ? (
+            <div>
+              <h3 className="text-2xl font-semibold text-red-500">
+                ❌ No User Found
+              </h3>
+              <p className="text-lg text-gray-400 mt-4">
+                The scanned QR code does not correspond to any user in the
+                system.
+              </p>
+              <button
+                onClick={resetScanner}
+                className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
+              >
+                Scan Next
+              </button>
+            </div>
+          ) : userStatus === "error" ? (
+            <div>
+              <h3 className="text-2xl font-semibold text-yellow-500">
+                ⚠️ There is an error scanning this code or the user is not found
+              </h3>
+              <p className="text-lg text-gray-400 mt-4">
+                If this problem persists, please reach out to us.
+              </p>
+              <button
+                onClick={resetScanner}
+                className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
+              >
+                Scan Next
+              </button>
+            </div>
+          ) : userStatus ? (
             data?.user?.paymentData?.success ? (
-              // Payment successful, show check-in status or allow check-in
               userStatus === "true" ? (
                 <div>
                   <h3 className="text-2xl font-semibold text-green-500">
@@ -161,12 +204,10 @@ const QRScanner = () => {
                 </div>
               )
             ) : (
-              // If payment failed
               <div>
                 <h3 className="text-2xl font-semibold text-red-500">
                   ❌ Payment Failed!{" "}
-                  {data?.user?.name ? data.user.name : "User"} {""}
-                  Cannot Check In
+                  {data?.user?.name ? data.user.name : "User"} Cannot Check In
                 </h3>
                 <h3 className="text-xl font-semibold">
                   {data?.user?.email ? data.user.email : "N/A"}
