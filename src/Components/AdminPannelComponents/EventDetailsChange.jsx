@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import bcrypt from "bcryptjs";
 import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
+const EventDetailsChange = ({ viewMode = false }) => {
+  // Add viewMode prop
   const navigate = useNavigate();
   const eventSelector = useSelector((state) => state.eventId.value);
   const [eventName, setEventName] = useState("");
@@ -32,11 +32,12 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
   const [isVirtual, setIsVirtual] = useState(false);
   const [validationError, setValidationError] = useState("");
 
-
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await axios.get(`https://tesract-server.onrender.com/event/${eventSelector?.eventId}`);
+        const response = await axios.get(
+          `https://tesract-server.onrender.com/event/${eventSelector?.eventId}`
+        );
         const event = response.data.data;
         setEventName(event.eventName);
         setEventHostedBy(event.eventHostedBy);
@@ -93,35 +94,32 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
       return;
     }
     setSpinner(true);
-    const salt = bcrypt.genSaltSync(10);
-    const adminHashedPassword = bcrypt.hashSync(eventAdminPassword, salt);
 
     const data = {
       eventName,
       eventDescription,
       eventVenue,
       eventVenueUrl,
-      eventManagerMail,
-      eventManagerPhone,
-      eventAdminPassword: adminHashedPassword,
+
       eventDate,
       eventLastDate,
-      eventPaymentUpi: eventManagerUPI,
       eventHostedBy,
       eventSpeaker,
       eventMailDescription,
     };
 
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         `https://tesract-server.onrender.com/event/${eventSelector?.eventId}`,
         data
       );
-      if (response.data.message) {
+      // console.log(response);
+      if (response.status === 200) {
+        alert("Event Details Updated Successfully");
         setSpinner(false);
-        navigate(
-          `/secure/v3/Event-On-Boarding/success/${response.data.data._id}`
-        );
+      } else {
+        alert("Error in updating event details");
+        setSpinner(false);
       }
     } catch (error) {
       console.log(error);
@@ -136,9 +134,7 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
           <h3 className="text-3xl font-bold sm:text-4xl">
             Edit Your Event Details
           </h3>
-          <p className="mt-2 text-lg">
-            Update the details of your event below
-          </p>
+          <p className="mt-2 text-lg">Update the details of your event below</p>
         </div>
         <form
           onSubmit={handleSubmit}
@@ -152,7 +148,7 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
               required
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className="w-full px-3 py-2 rounded-lg bg-gray-500 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 cursor-not-allowed"
               disabled={viewMode}
             />
           </div>
@@ -165,7 +161,9 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
               value={eventDescription}
               onChange={(e) => setEventDescription(e.target.value)}
               required
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${
+                viewMode ? "bg-gray-500 cursor-not-allowed" : ""
+              }`}
               disabled={viewMode}
             />
           </div>
@@ -234,7 +232,9 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
               value={eventHostedBy}
               onChange={(e) => setEventHostedBy(e.target.value)}
               required
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${
+                viewMode ? "bg-gray-500 cursor-not-allowed" : ""
+              }`}
               disabled={viewMode}
             />
           </div>
@@ -248,7 +248,9 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
               placeholder="Name of the speaker (if any)"
               value={eventSpeaker}
               onChange={(e) => setEventSpeaker(e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${
+                viewMode ? "bg-gray-500 cursor-not-allowed" : ""
+              }`}
               disabled={viewMode}
             />
           </div>
@@ -263,24 +265,11 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
                 value={eventVenue}
                 onChange={(e) => setEventVenue(e.target.value)}
                 required
-                className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode || isVirtual ? "bg-gray-500 cursor-not-allowed" : ""}`}
+                className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${
+                  viewMode || isVirtual ? "bg-gray-500 cursor-not-allowed" : ""
+                }`}
                 disabled={viewMode || isVirtual}
               />
-            </div>
-            <div className="mt-4">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={isVirtual}
-                  onChange={() => {
-                    setIsVirtual(!isVirtual);
-                    setEventVenue(isVirtual ? "" : "Online Event");
-                  }}
-                  className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                  disabled={viewMode}
-                />
-                <span className="ml-2">Online Event</span>
-              </label>
             </div>
           </div>
           <div>
@@ -293,51 +282,34 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
               value={eventVenueUrl}
               onChange={(e) => setEventVenueUrl(e.target.value)}
               placeholder="https://example.com (Google Maps URL)"
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode || isVirtual ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${
+                viewMode || isVirtual ? "bg-gray-500 cursor-not-allowed" : ""
+              }`}
               disabled={viewMode || isVirtual}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Price
-            </label>
+            <label className="block text-sm font-medium mb-2">Price</label>
             <input
               type="number"
-
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder=""
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${true ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1`}
               pattern="^[0-9]+$"
               title="Please enter a valid price (numbers only)"
-              disabled={true || freeEventCheckbox}
-
             />
-            <label className="inline-flex items-center mt-2">
-              <input
-                type="checkbox"
-
-                checked={freeEventCheckbox}
-                onChange={() => {
-                  setFreeEventCheckbox(!freeEventCheckbox);
-                  setPrice(freeEventCheckbox ? "" : "0");
-                }}
-                className="form-checkbox h-5 w-5 text-indigo-600"
-
-              />
-              <span className="ml-2 text-sm text-gray-200">Free Event</span>
-            </label>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Event Date
-            </label>
+            <label className="block text-sm font-medium mb-2">Event Date</label>
             <DatePicker
               selected={eventDate}
               onChange={handleEventDate}
               dateFormat="yyyy-MM-dd"
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${
+                viewMode ? "bg-gray-500 cursor-not-allowed" : ""
+              }`}
               disabled={viewMode}
             />
           </div>
@@ -352,74 +324,16 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
               selected={eventLastDate}
               onChange={handleEventLastDate}
               dateFormat="yyyy-MM-dd"
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
+              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${
+                viewMode ? "bg-gray-500 cursor-not-allowed" : ""
+              }`}
               disabled={eventDate === null || viewMode}
             />
           </div>
           <div className="md:col-span-2">
             <span className="block py-2 text-red-600">{messageLastDate}</span>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Email (
-              <span className="font-light">for further communications</span>)
-            </label>
-            <input
-              type="email"
-              id="eventMail"
-              value={eventManagerMail}
-              onChange={(e) => setEventManagerMail(e.target.value)}
-              required
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
-              disabled={viewMode}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Contact Number (
-              <span className="font-light">for further communications</span>)
-            </label>
-            <input
-              type="tel"
-              id="eventPhone"
-              value={eventManagerPhone}
-              onChange={(e) => setEventManagerPhone(e.target.value)}
-              required
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
-              pattern="[0-9]{10}"
-              title="Please enter a valid 10-digit phone number"
-              disabled={viewMode}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              UPI ID (<span className="font-light">for receiving payments</span>)
-            </label>
-            <input
-              type="text"
-              id="eventManagerUPI"
-              value={eventManagerUPI}
-              onChange={(e) => setEventManagerUPI(e.target.value)}
-              required
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode || freeEventCheckbox ? "bg-gray-500 cursor-not-allowed" : ""}`}
-              disabled={viewMode || freeEventCheckbox}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Admin Password (
-              <span className="font-light">for managing event</span>)
-            </label>
-            <input
-              type="password"
-              id="eventAdminPassword"
-              value={eventAdminPassword}
-              onChange={(e) => setEventAdminPassword(e.target.value)}
-              required
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 ${viewMode ? "bg-gray-500 cursor-not-allowed" : ""}`}
-              disabled={viewMode}
-            />
-          </div>
+
           {!viewMode && (
             <button
               type="submit"
@@ -447,7 +361,7 @@ const EventDetailsChange = ({ viewMode = false }) => {  // Add viewMode prop
                   ></path>
                 </svg>
               ) : (
-                "Submit"
+                "Update Your Event Details"
               )}
             </button>
           )}
