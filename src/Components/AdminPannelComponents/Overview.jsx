@@ -1,14 +1,28 @@
+
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import BarChart from "./utils/BarChart";
+import {
+  Bar,
+} from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Overview = () => {
   const eventSelector = useSelector((state) => state.eventId.value);
   const [eventData, setEventData] = useState(null);
   const [eventParticipants, setEventParticipants] = useState([]);
-  const [participantsChartData, setParticipantsChartData] = useState([]);
-  const [revenueChartData, setRevenueChartData] = useState([]);
+  
 
   const countParticipantsBetweenDates = (participants, startDate, endDate) => {
     return participants.filter((participant) => {
@@ -32,11 +46,22 @@ const Overview = () => {
     const percentageDeduction = totalRevenue * 0.02;
     const fixedDeduction = totalParticipants * 5;
 
-    // const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
-    const finalTotal = totalRevenue - percentageDeduction;
+    const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
 
     return finalTotal.toLocaleString();
   };
+
+  // const getTodayParticipants = (participants) => {
+  //   const today = new Date();
+  //   return participants.filter((participant) => {
+  //     const registrationDate = new Date(participant.userRegistrationDate);
+  //     return (
+  //       registrationDate.getDate() === today.getDate() &&
+  //       registrationDate.getMonth() === today.getMonth() &&
+  //       registrationDate.getFullYear() === today.getFullYear()
+  //     );
+  //   });
+  // };
 
   const getTodayParticipants = (participants) => {
     const today = new Date();
@@ -45,10 +70,12 @@ const Overview = () => {
       return (
         registrationDate.getDate() === today.getDate() &&
         registrationDate.getMonth() === today.getMonth() &&
-        registrationDate.getFullYear() === today.getFullYear()
+        registrationDate.getFullYear() === today.getFullYear() &&
+        participant.paymentData?.data?.state === "COMPLETED"
       );
-    });
+    }).length;
   };
+  
 
   useEffect(() => {
     const fetchEventData = async () => {
@@ -77,53 +104,25 @@ const Overview = () => {
     fetchParticipantsData();
   }, [eventSelector.eventId]);
 
-  useEffect(() => {
-    if (eventData && eventParticipants.length > 0) {
-      processChartData(eventParticipants);
-    }
-  }, [eventData, eventParticipants]);
+  const getParticipantsByDate = (participants) => {
+    const paidParticipants = participants.filter(
+      (p) => p.paymentData?.data?.state === "COMPLETED"
+    );
 
-  const processChartData = (participants) => {
-    if (!eventData) {
-      console.error("eventData is null or undefined.");
-      return;
-    }
+    const dateCount = paidParticipants.reduce((acc, p) => {
+      const registrationDate = new Date(p.userRegistrationDate).toDateString();
+      acc[registrationDate] = (acc[registrationDate] || 0) + 1;
+      return acc;
+    }, {});
 
-    const dateMap = {};
+    const labels = Object.keys(dateCount);
+    const data = Object.values(dateCount);
 
-    participants.forEach((participant) => {
-      const registrationDate = new Date(
-        participant.userRegistrationDate
-      ).toDateString();
-      const paymentAmount =
-        participant.paymentData?.data?.state === "COMPLETED"
-          ? parseFloat(eventData.eventPrice || 0)
-          : 0;
-
-      if (dateMap[registrationDate]) {
-        dateMap[registrationDate].participants += 1;
-        dateMap[registrationDate].amount += paymentAmount;
-      } else {
-        dateMap[registrationDate] = {
-          participants: 1,
-          amount: paymentAmount,
-        };
-      }
-    });
-
-    const participantsData = Object.keys(dateMap).map((date) => ({
-      date,
-      participants: dateMap[date].participants,
-    }));
-
-    const revenueData = Object.keys(dateMap).map((date) => ({
-      date,
-      amount: dateMap[date].amount,
-    }));
-
-    setParticipantsChartData(participantsData);
-    setRevenueChartData(revenueData);
+    return { labels, data };
   };
+  
+
+  
 
   return (
     <>
@@ -198,13 +197,11 @@ const Overview = () => {
               </h2>
               <div className="flex items-center space-x-4">
                 <span className="text-4xl font-extrabold text-purple-500">
-                  {
-                    getTodayParticipants(
-                      eventParticipants,
-                      eventData?.eventCreatedDate,
-                      eventData?.eventLastDate
-                    ).length
-                  }
+                  {getTodayParticipants(
+                    eventParticipants,
+                    eventData?.eventCreatedDate,
+                    eventData?.eventLastDate
+                  )}
                 </span>
                 <div className="flex flex-col text-sm text-gray-300">
                   <span className="leading-tight">New</span>
@@ -213,32 +210,47 @@ const Overview = () => {
               </div>
             </div>
           </div>
-
+          
           {/* Second Row */}
           <div className="flex flex-col space-y-6 p-6 rounded-lg shadow-md max-h max-w">
             <div className="flex space-x-6">
-              <div className="bg-gray-800 p-6 rounded-lg shadow-md flex-1">
-                <h2 className="text-lg font-semibold text-gray-100">
-                  Participants by Date
-                </h2>
-                {participantsChartData.length > 0 && (
-                  <BarChart
-                    data={participantsChartData}
-                    xAxisLabel="Date"
-                    yAxisLabel="Number of Participants"
-                  />
-                )}
-              </div>
+              
 
-              {/* Revenue by Date */}
-              {/* <div className="bg-gray-800 p-6 rounded-lg shadow-md flex-1">
-                <h2 className="text-lg font-semibold text-gray-100">
-                  Revenue by Date
-                </h2>
-                {revenueChartData.length > 0 && (
-                  <BarChart data={revenueChartData} xAxisLabel="Date" yAxisLabel="Amount Earned (₹)" />
-                )}
-              </div> */}
+              <div className="bg-gray-800 p-6 rounded-lg shadow-md flex-1">
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">
+              Participants by Date (Paid)
+            </h2>
+            <Bar
+              data={{
+                labels: getParticipantsByDate(eventParticipants).labels,
+                datasets: [
+                  {
+                    label: "Participants (Paid)",
+                    data: getParticipantsByDate(eventParticipants).data,
+                    backgroundColor: "rgba(75, 192, 192, 0.6)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1,
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "top",
+                  },
+                  title: {
+                    display: true,
+                    text: "Participants Over Time",
+                  },
+                },
+                scales: {
+                  x: { title: { display: true, text: "Dates" } },
+                  y: { title: { display: true, text: "Number of Participants" } },
+                },
+              }}
+            />
+          </div>
             </div>
           </div>
 
@@ -330,3 +342,5 @@ const Overview = () => {
 };
 
 export default Overview;
+
+
