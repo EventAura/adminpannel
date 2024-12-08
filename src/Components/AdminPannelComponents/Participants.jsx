@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ParticipantsModel from "./utils/ParticipantsModel";
 
@@ -48,50 +48,72 @@ const Participants = () => {
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Function to download participants data as Excel file
   const downloadExcel = () => {
-    const data = filteredParticipants.map((item) => ({
+    const successfulParticipants = filteredParticipants.filter(
+      (item) => item?.paymentData?.data?.state === "COMPLETED"
+    );
+  
+    const data = successfulParticipants.map((item) => ({
       Name: item.name,
       Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
-      Status:
-        item?.paymentData?.data?.state === "COMPLETED" ? "Completed" : "Failed",
-      "Transaction ID": item?.paymentData?.data?.transactionId,
+      "Transaction ID": item?.paymentData?.data?.transactionId || "N/A",
       Email: item?.email,
     }));
-
+  
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
-
+  
     XLSX.writeFile(workbook, "Participants_Report.xlsx");
   };
+  
 
-  // Function to download participants data as PDF file
+  
+  // Function to download participants data as PDF
   const downloadPDF = () => {
     const doc = new jsPDF();
-    const tableData = filteredParticipants.map((item) => [
+  
+    // Add Title
+    doc.setFontSize(18);
+    doc.text("Participants Report", 14, 22);
+  
+    // Add Meta Information
+    doc.setFontSize(12);
+    doc.text(`Event ID: ${eventSelector.eventId}`, 14, 30);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 36);
+  
+    // Filter only successfully paid participants
+    const successfulParticipants = filteredParticipants.filter(
+      (item) => item?.paymentData?.data?.state === "COMPLETED"
+    );
+  
+    const tableData = successfulParticipants.map((item) => [
       item.name,
       new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
-      item?.paymentData?.data?.state === "COMPLETED" ? "Completed" : "Failed",
-      item?.paymentData?.data?.transactionId,
+      item?.paymentData?.data?.transactionId || "N/A",
       item?.email,
     ]);
-
+  
+    // Add Table
     doc.autoTable({
-      head: [["Name", "Date", "Status", "Transaction ID", "Email"]],
+      head: [["Name", "Date", "Transaction ID", "Email"]],
       body: tableData,
+      startY: 40,
+      theme: "grid",
     });
-
+  
     doc.save("Participants_Report.pdf");
   };
-
+  
   if (loading) {
     return (
       <>

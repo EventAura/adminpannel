@@ -43,51 +43,55 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                 <div>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Name:
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {" "}
                       {value?.name}{" "}
                     </span>
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Email:{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.email}{" "}
                     </span>
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Phone:{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.phoneNumber}{" "}
                     </span>
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     College:{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.college}{" "}
                     </span>
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Roll Number:{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.rollNumber}{" "}
                     </span>
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Registration Date:{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {new Date(value?.userRegistrationDate).toLocaleDateString(
                         "en-US",
                         {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
                         }
                       )}{" "}
                     </span>
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Payment Status:{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.paymentData?.data?.state
                         ? value?.paymentData?.data?.state
                         : "Payment Failed"}{" "}
@@ -95,7 +99,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Transcation Id :{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.paymentData?.data?.transactionId
                         ? value?.paymentData?.data?.transactionId
                         : "Payment Failed"}{" "}
@@ -103,7 +107,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Payment Gateway Transcation ID (PG):{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.paymentData?.data?.merchantTransactionId
                         ? value?.paymentData?.data?.merchantTransactionId
                         : "Payment Failed"}{" "}
@@ -111,7 +115,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
                     Participant Entry Status:{" "}
-                    <span className="font-semibold text-gray-50">
+                    <span className="font-semibold text-gray-500">
                       {value?.userEntryStatus == "false" ? (
                         <>
                           <div>Not Entered the event</div>
