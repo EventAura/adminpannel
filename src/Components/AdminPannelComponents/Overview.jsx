@@ -1,11 +1,7 @@
-
-
 import axios from "axios";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  Bar,
-} from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,13 +12,19 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Overview = () => {
   const eventSelector = useSelector((state) => state.eventId.value);
   const [eventData, setEventData] = useState(null);
   const [eventParticipants, setEventParticipants] = useState([]);
-  
 
   const countParticipantsBetweenDates = (participants, startDate, endDate) => {
     return participants.filter((participant) => {
@@ -46,7 +48,8 @@ const Overview = () => {
     const percentageDeduction = totalRevenue * 0.02;
     const fixedDeduction = totalParticipants * 5;
 
-    const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
+    // const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
+    const finalTotal = totalRevenue - percentageDeduction;
 
     return finalTotal.toLocaleString();
   };
@@ -75,7 +78,6 @@ const Overview = () => {
       );
     }).length;
   };
-  
 
   useEffect(() => {
     const fetchEventData = async () => {
@@ -120,9 +122,6 @@ const Overview = () => {
 
     return { labels, data };
   };
-  
-
-  
 
   return (
     <>
@@ -210,47 +209,50 @@ const Overview = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Second Row */}
           <div className="flex flex-col space-y-6 p-6 rounded-lg shadow-md max-h max-w">
             <div className="flex space-x-6">
-              
-
               <div className="bg-gray-800 p-6 rounded-lg shadow-md flex-1">
-            <h2 className="text-lg font-semibold text-gray-100 mb-4">
-              Participants by Date (Paid)
-            </h2>
-            <Bar
-              data={{
-                labels: getParticipantsByDate(eventParticipants).labels,
-                datasets: [
-                  {
-                    label: "Participants (Paid)",
-                    data: getParticipantsByDate(eventParticipants).data,
-                    backgroundColor: "rgba(75, 192, 192, 0.6)",
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    borderWidth: 1,
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: "top",
-                  },
-                  title: {
-                    display: true,
-                    text: "Participants Over Time",
-                  },
-                },
-                scales: {
-                  x: { title: { display: true, text: "Dates" } },
-                  y: { title: { display: true, text: "Number of Participants" } },
-                },
-              }}
-            />
-          </div>
+                <h2 className="text-lg font-semibold text-gray-100 mb-4">
+                  Participants by Date (Paid)
+                </h2>
+                <Bar
+                  data={{
+                    labels: getParticipantsByDate(eventParticipants).labels,
+                    datasets: [
+                      {
+                        label: "Participants (Paid)",
+                        data: getParticipantsByDate(eventParticipants).data,
+                        backgroundColor: "rgba(75, 192, 192, 0.6)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1,
+                      },
+                    ],
+                  }}
+                  options={{
+                    responsive: true,
+                    plugins: {
+                      legend: {
+                        position: "top",
+                      },
+                      title: {
+                        display: true,
+                        text: "Participants Over Time",
+                      },
+                    },
+                    scales: {
+                      x: { title: { display: true, text: "Dates" } },
+                      y: {
+                        title: {
+                          display: true,
+                          text: "Number of Participants",
+                        },
+                      },
+                    },
+                  }}
+                />
+              </div>
             </div>
           </div>
 
@@ -342,5 +344,3 @@ const Overview = () => {
 };
 
 export default Overview;
-
-
