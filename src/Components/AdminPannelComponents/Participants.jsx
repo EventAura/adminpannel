@@ -51,10 +51,9 @@ const Participants = () => {
     )
     .filter((item) => {
       if (filter === "All") return true;
-      if (filter === "Paid")
-        return item?.paymentData?.data?.state === "COMPLETED";
-      if (filter === "Failed")
-        return item?.paymentData?.data?.state !== "COMPLETED";
+      if (filter === "Paid") return item?.paymentData?.data?.state === "COMPLETED";
+      if (filter === "Pending") return item?.paymentData?.data?.state === "PENDING";
+      if (filter === "Failed") return item?.paymentData?.data?.state === "FAILED";
       return true;
     });
 
@@ -212,6 +211,16 @@ const Participants = () => {
             Paid
           </button>
           <button
+    className={`px-4 py-2 text-white rounded-lg ${
+      filter === "Pending"
+        ? "bg-yellow-500 hover:bg-yellow-600"
+        : "bg-gray-700 hover:bg-gray-600"
+    }`}
+    onClick={() => setFilter("Pending")}
+  >
+    Pending
+  </button>
+          <button
             className={`px-4 py-2 text-white rounded-lg ${
               filter === "Failed"
                 ? "bg-red-600 hover:bg-red-700"
@@ -265,17 +274,23 @@ const Participants = () => {
                     )}
                   </td>
                   <td className="pr-6 py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full font-medium ${
-                        item?.paymentData?.data?.state === "COMPLETED"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {item?.paymentData?.data?.state === "COMPLETED"
-                        ? "Completed"
-                        : "Failed"}
-                    </span>
+                  <span
+                        className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                          item?.paymentData?.data?.state === "COMPLETED"
+                            ? "text-green-500"
+                            : item?.paymentData?.data?.state === "PENDING"
+                            ? "text-yellow-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {item?.paymentData?.data?.state === "PENDING"
+                          ? "PENDING"
+                          : item?.paymentData?.data?.state === "COMPLETED"
+                          ? "PAID"
+                          : item?.paymentData?.data?.state === "FAILED"
+                          ? "Failed"
+                          : "FAILED"}
+                      </span>
                   </td>
                   <td className="pr-6 py-4">
                     {item?.paymentData?.data?.transactionId || "N/A"}
@@ -306,3 +321,5 @@ const Participants = () => {
 };
 
 export default Participants;
+
+
