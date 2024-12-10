@@ -314,6 +314,7 @@ const Participants = () => {
           isOpen={modal}
           closeModal={closeModal}
           value={modelParticipant}
+          eventId={eventSelector.eventId}
         />
       </div>
     </>

@@ -1,6 +1,12 @@
 import React from "react";
+import axios from "axios";
 
-const ParticipantsModel = ({ isOpen, closeModal, value }) => {
+const ParticipantsModel = ({ isOpen, closeModal, value,eventId }) => {
+  const handleClick = async() => {
+     const response= await axios.post(`https://tesract-server.onrender.com/api/phone-pay/status/M22FPMAZBNMJ5/${value.merchantTransactionId}/${eventId}`)
+      console.log(response)
+      console.log("clicked")
+  };
   return (
     <>
       {isOpen && (
@@ -131,6 +137,11 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                       {value?.paymentData?.data?.state}
                         
                     </span>
+                  </p>
+                  <p className="text-base text-gray-700 dark:text-gray-100 py-1">
+                      send email again:{" "}
+                      <button onClick={handleClick}
+                      className="font-semibold text-white border-1 p-2 ml-2 rounded-md bg-indigo-600">send email</button>
                   </p>
                 </div>
               </div>
