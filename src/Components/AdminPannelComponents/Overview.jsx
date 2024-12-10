@@ -276,7 +276,7 @@ const Overview = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {eventParticipants.slice(0, 5).map((participant, index) => (
+                  {eventParticipants.slice(0, 15).map((participant, index) => (
                     <tr key={index} className="hover:bg-gray-600">
                       <td className="border px-4 py-2 border-gray-500">
                         {participant.name}
@@ -285,9 +285,13 @@ const Overview = () => {
                         {participant.email}
                       </td>
                       <td className="border px-4 py-2 border-gray-500">
-                        {participant.paymentData?.data?.state
-                          ? "Paid"
-                          : "Failed"}
+                        {participant.paymentData?.data?.state === "PENDING"
+                          ? "PENDING"
+                          : participant.paymentData?.data?.state === "COMPLETED"
+                          ? "PAID"
+                          : participant.paymentData?.data?.state === "FAILED"
+                          ? "Failed"
+                          : "FAILED"}
                       </td>
                       <td className="border px-4 py-2 border-gray-500">
                         {participant.paymentData?.data?.transactionId
