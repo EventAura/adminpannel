@@ -1,4 +1,4 @@
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import axios from "axios";
 
@@ -156,7 +156,7 @@ const QRScanner = () => {
               </button>
             </div>
           ) : userStatus ? (
-            data?.user?.paymentData?.success ? (
+            data?.user?.paymentData?.data.responseCode === "SUCCESS" ? (
               userStatus === "true" ? (
                 <div>
                   <h3 className="text-2xl font-semibold text-green-500">
