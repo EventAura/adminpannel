@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ParticipantsModel from "./utils/ParticipantsModel";
 
@@ -16,6 +16,7 @@ const Participants = () => {
   const [modal, setModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("All");
 
   const openModal = (participant) => {
     setModelParticipant(participant);
@@ -35,7 +36,6 @@ const Participants = () => {
         );
         setParticipants(response.data);
         setLoading(false);
-        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -43,18 +43,33 @@ const Participants = () => {
     fetchParticipantsApi();
   }, [eventSelector.eventId]);
 
-  // Filter participants based on search term
-  const filteredParticipants = participants.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredParticipants = participants
+    .filter((item) =>
+      Object.values(item)
+        .map((field) => String(field).toLowerCase())
+        .some((field) => field.includes(searchTerm.toLowerCase()))
+    )
+    .filter((item) => {
+      if (filter === "All") return true;
+      if (filter === "Paid")
+        return item?.paymentData?.data?.state === "COMPLETED";
+      if (filter === "Failed")
+        return item?.paymentData?.data?.state !== "COMPLETED";
+      return true;
+    });
 
-  // Function to download participants data as Excel file
+  const generateFileName = () => {
+    const eventName = eventSelector.eventId;
+    const dateTime = new Date().toLocaleString().replace(/[/,:\s]/g, "_");
+    return `${eventName}__participants_${dateTime}`;
+  };
+
   const downloadExcel = () => {
-    const successfulParticipants = filteredParticipants.filter(
+    const paidParticipants = participants.filter(
       (item) => item?.paymentData?.data?.state === "COMPLETED"
     );
-  
-    const data = successfulParticipants.map((item) => ({
+
+    const data = paidParticipants.map((item) => ({
       Name: item.name,
       Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
         year: "numeric",
@@ -64,35 +79,28 @@ const Participants = () => {
       "Transaction ID": item?.paymentData?.data?.transactionId || "N/A",
       Email: item?.email,
     }));
-  
+
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
-  
-    XLSX.writeFile(workbook, "Participants_Report.xlsx");
-  };
-  
 
-  
-  // Function to download participants data as PDF
+    XLSX.writeFile(workbook, `${generateFileName()}.xlsx`);
+  };
+
   const downloadPDF = () => {
+    const paidParticipants = participants.filter(
+      (item) => item?.paymentData?.data?.state === "COMPLETED"
+    );
+
     const doc = new jsPDF();
-  
-    // Add Title
+
     doc.setFontSize(18);
     doc.text("Participants Report", 14, 22);
-  
-    // Add Meta Information
     doc.setFontSize(12);
     doc.text(`Event ID: ${eventSelector.eventId}`, 14, 30);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 36);
-  
-    // Filter only successfully paid participants
-    const successfulParticipants = filteredParticipants.filter(
-      (item) => item?.paymentData?.data?.state === "COMPLETED"
-    );
-  
-    const tableData = successfulParticipants.map((item) => [
+
+    const tableData = paidParticipants.map((item) => [
       item.name,
       new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
         year: "numeric",
@@ -102,22 +110,21 @@ const Participants = () => {
       item?.paymentData?.data?.transactionId || "N/A",
       item?.email,
     ]);
-  
-    // Add Table
+
     doc.autoTable({
       head: [["Name", "Date", "Transaction ID", "Email"]],
       body: tableData,
       startY: 40,
       theme: "grid",
     });
-  
-    doc.save("Participants_Report.pdf");
+
+    doc.save(`${generateFileName()}.pdf`);
   };
-  
+
   if (loading) {
     return (
       <>
-        <div className="flex flex-col justify-center items-center h-screen ">
+        <div className="flex flex-col justify-center items-center h-screen">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 100 100"
@@ -150,40 +157,70 @@ const Participants = () => {
             </circle>
           </svg>
           <h2 className="text-xl font-semibold text-gray-100 mt-4">
-            Gathering Your Paticipants 🎇
+            Gathering Your Participants 🎇
           </h2>
         </div>
       </>
     );
   }
+
   return (
     <>
       <div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="items-start justify-between md:flex">
-          <div className="max-w-lg">
-            <h3 className="text-gray-100 text-xl font-bold sm:text-2xl">
-              All Participants
-            </h3>
-          </div>
-          <div className="mt-3 md:mt-0">
-            <Link
-              to="/secure/v3/dasboard/qrcode-scanner" // Corrected spelling from "dasboard" to "dashboard"
-              className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
-            >
-              Event Onboarding
-            </Link>
-          </div>
+          <h3 className="text-gray-100 text-xl font-bold sm:text-2xl">
+            All Participants
+          </h3>
+          <Link
+            to="/secure/v3/dasboard/qrcode-scanner"
+            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+          >
+            Event Onboarding
+          </Link>
         </div>
 
-        {/* Search Box */}
         <div className="mt-4">
           <input
             type="text"
-            className="block w-full px-3 py-2 placeholder-gray-400 text-gray-100  rounded-md shadow-sm focus:border-none border sm:text-sm"
+            className="block w-full px-3 py-2 placeholder-gray-400 text-gray-100 bg-gray-800 rounded-md shadow-sm"
+            style={{ width: "80%" }}
             placeholder="Search participants by name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+        </div>
+
+        <div className="mt-6 flex gap-4">
+          <button
+            className={`px-4 py-2 text-white rounded-lg ${
+              filter === "All"
+                ? "bg-indigo-600 hover:bg-indigo-700"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+            onClick={() => setFilter("All")}
+          >
+            All
+          </button>
+          <button
+            className={`px-4 py-2 text-white rounded-lg ${
+              filter === "Paid"
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+            onClick={() => setFilter("Paid")}
+          >
+            Paid
+          </button>
+          <button
+            className={`px-4 py-2 text-white rounded-lg ${
+              filter === "Failed"
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+            onClick={() => setFilter("Failed")}
+          >
+            Failed
+          </button>
         </div>
 
         <div className="mt-6 flex justify-end">
@@ -202,22 +239,22 @@ const Participants = () => {
         </div>
 
         <div className="mt-6 relative h-max overflow-auto">
-          <table className="w-full table-auto text-sm text-left">
-            <thead className="text-gray-100 font-medium border-b">
+          <table className="w-full table-auto text-base text-left">
+            <thead className="text-gray-100 font-semibold border-b border-gray-700">
               <tr>
-                <th className="py-3 pr-6">Name</th>
-                <th className="py-3 pr-6">Date</th>
-                <th className="py-3 pr-6">Status</th>
-                <th className="py-3 pr-6">Transaction ID</th>
-                <th className="py-3 pr-6">Email</th>
-                <th className="py-3 pr-6"></th>
+                <th className="py-4 pr-6">Name</th>
+                <th className="py-4 pr-6">Date</th>
+                <th className="py-4 pr-6">Status</th>
+                <th className="py-4 pr-6">Transaction ID</th>
+                <th className="py-4 pr-6">Email</th>
+                <th className="py-4 pr-6"></th>
               </tr>
             </thead>
-            <tbody className="text-gray-100 divide-y">
+            <tbody className="text-gray-100 divide-y divide-gray-700">
               {filteredParticipants.map((item, idx) => (
-                <tr key={idx}>
-                  <td className="pr-6 py-4 whitespace-nowrap">{item.name}</td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
+                <tr key={idx} className="hover:bg-gray-800">
+                  <td className="pr-6 py-4">{item.name}</td>
+                  <td className="pr-6 py-4">
                     {new Date(item.userRegistrationDate).toLocaleDateString(
                       "en-US",
                       {
@@ -227,9 +264,9 @@ const Participants = () => {
                       }
                     )}
                   </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
+                  <td className="pr-6 py-4">
                     <span
-                      className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                      className={`px-3 py-1 rounded-full font-medium ${
                         item?.paymentData?.data?.state === "COMPLETED"
                           ? "text-green-500"
                           : "text-red-500"
@@ -237,35 +274,32 @@ const Participants = () => {
                     >
                       {item?.paymentData?.data?.state === "COMPLETED"
                         ? "Completed"
-                        : "failed"}
+                        : "Failed"}
                     </span>
                   </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">
-                    {item?.paymentData?.data?.transactionId
-                      ? item.paymentData.data.transactionId.slice(-5)
-                      : "N/A"}
+                  <td className="pr-6 py-4">
+                    {item?.paymentData?.data?.transactionId || "N/A"}
                   </td>
-                  <td className="pr-6 py-4 whitespace-nowrap">{item?.email}</td>
-                  <td className="text-right whitespace-nowrap">
+                  <td className="pr-6 py-4">{item.email}</td>
+                  <td className="pr-6 py-4">
                     <button
-                      href="javascript:void(0)"
-                      className="py-1.5 px-2 text-gray-100 bg-indigo-600 hover:bg-indigo-800 duration-150 text-xs rounded-lg"
+                      className="py-2 px-4 text-gray-100 bg-indigo-600 hover:bg-indigo-800 duration-150 text-xs rounded-lg"
                       onClick={() => openModal(item)}
                     >
                       Show More
                     </button>
-
-                    <ParticipantsModel
-                      isOpen={modal}
-                      closeModal={closeModal}
-                      value={modelParticipant}
-                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        <ParticipantsModel
+          isOpen={modal}
+          closeModal={closeModal}
+          value={modelParticipant}
+        />
       </div>
     </>
   );
