@@ -124,40 +124,9 @@ const QRScanner = () => {
       {/* Scan Result Section */}
       {scanResult && (
         <div className="mt-8 w-96 bg-gray-800 p-6 rounded-lg shadow-lg text-gray-200">
-          {userStatus === "not-found" ? (
-            <div>
-              <h3 className="text-2xl font-semibold text-red-500">
-                ❌ No User Found
-              </h3>
-              <p className="text-lg text-gray-400 mt-4">
-                The scanned QR code does not correspond to any user in the
-                system.
-              </p>
-              <button
-                onClick={resetScanner}
-                className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
-              >
-                Scan Next
-              </button>
-            </div>
-          ) : userStatus === "error" ? (
-            <div>
-              <h3 className="text-2xl font-semibold text-yellow-500">
-                ⚠️ There is an error scanning this code or the user is not found
-              </h3>
-              <p className="text-lg text-gray-400 mt-4">
-                If this problem persists, please reach out to us.
-              </p>
-              <button
-                onClick={resetScanner}
-                className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
-              >
-                Scan Next
-              </button>
-            </div>
-          ) : userStatus ? (
+          {data?.user ? (
             data?.user?.paymentData?.data.responseCode === "SUCCESS" ? (
-              userStatus === "true" ? (
+              data?.user?.userEntryStatus === "true" ? (
                 <div>
                   <h3 className="text-2xl font-semibold text-green-500">
                     ✅ {data?.user?.name ? data.user.name : "User"} Checked In
@@ -221,7 +190,21 @@ const QRScanner = () => {
               </div>
             )
           ) : (
-            <p className="text-lg text-gray-400 mt-4">Loading user status...</p>
+            <div>
+              <h3 className="text-2xl font-semibold text-red-500">
+                ❌ No User Found
+              </h3>
+              <p className="text-lg text-gray-400 mt-4">
+                The scanned QR code does not correspond to any user in the
+                system.
+              </p>
+              <button
+                onClick={resetScanner}
+                className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
+              >
+                Scan Next
+              </button>
+            </div>
           )}
         </div>
       )}
