@@ -125,6 +125,13 @@ const ParticipantsModel = ({ isOpen, closeModal, value }) => {
                       )}{" "}
                     </span>
                   </p>
+                  <p className="text-base text-gray-700 dark:text-gray-100 py-1">
+                    Payment Message:{" "}
+                    <span className="font-semibold text-gray-500">
+                      {value?.paymentData?.data?.state}
+                        
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
