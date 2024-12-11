@@ -63,62 +63,84 @@ const Participants = () => {
     return `${eventName}__participants_${dateTime}`;
   };
 
+  // const downloadExcel = () => {
+  //   const paidParticipants = participants.filter(
+  //     (item) => item?.paymentData?.data?.state === "COMPLETED"
+  //   );
+  
+  //   const data = paidParticipants.map((item) => ({
+  //     Name: item.name,
+  //     Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
+  //       year: "numeric",
+  //       month: "long",
+  //       day: "numeric",
+  //     }),
+  //     "Transaction ID": item?.paymentData?.data?.transactionId || "N/A",
+  //     Email: item?.email,
+  //     "Phone Number": item?.phoneNumber || "N/A",
+  //   }));
+  
+  //   const worksheet = XLSX.utils.json_to_sheet(data);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
+  
+  //   XLSX.writeFile(workbook, `${generateFileName()}.xlsx`);
+  // };
+  
   const downloadExcel = () => {
-    const paidParticipants = participants.filter(
-      (item) => item?.paymentData?.data?.state === "COMPLETED"
-    );
-
-    const data = paidParticipants.map((item) => ({
+    const filteredData = filteredParticipants.map((item) => ({
       Name: item.name,
       Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
+      Status: item?.paymentData?.data?.state || "N/A",
       "Transaction ID": item?.paymentData?.data?.transactionId || "N/A",
       Email: item?.email,
+      "Phone Number": item?.phoneNumber || "N/A",
     }));
-
-    const worksheet = XLSX.utils.json_to_sheet(data);
+  
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
-
+  
     XLSX.writeFile(workbook, `${generateFileName()}.xlsx`);
   };
+  
 
   const downloadPDF = () => {
-    const paidParticipants = participants.filter(
-      (item) => item?.paymentData?.data?.state === "COMPLETED"
-    );
-
     const doc = new jsPDF();
-
+  
     doc.setFontSize(18);
     doc.text("Participants Report", 14, 22);
     doc.setFontSize(12);
     doc.text(`Event ID: ${eventSelector.eventId}`, 14, 30);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 36);
-
-    const tableData = paidParticipants.map((item) => [
+  
+    const tableData = filteredParticipants.map((item) => [
       item.name,
       new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
+      item?.paymentData?.data?.state || "N/A",
       item?.paymentData?.data?.transactionId || "N/A",
       item?.email,
+      item?.phoneNumber || "N/A",
     ]);
-
+  
     doc.autoTable({
-      head: [["Name", "Date", "Transaction ID", "Email"]],
+      head: [["Name", "Date", "Status", "Transaction ID", "Email", "Phone Number"]],
       body: tableData,
       startY: 40,
       theme: "grid",
     });
-
+  
     doc.save(`${generateFileName()}.pdf`);
   };
+  
 
   if (loading) {
     return (
