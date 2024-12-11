@@ -123,6 +123,10 @@ const Overview = () => {
     return { labels, data };
   };
 
+  const participantsWithUserEntry = eventParticipants.filter(
+    (participant) => participant.userEntryStatus === "true"
+  );
+
   return (
     <>
       {eventParticipants.length > 0 && eventData ? (
@@ -276,7 +280,7 @@ const Overview = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {eventParticipants.slice(0, 15).map((participant, index) => (
+                  {eventParticipants.slice(0, 3).map((participant, index) => (
                     <tr key={index} className="hover:bg-gray-600">
                       <td className="border px-4 py-2 border-gray-500">
                         {participant.name}
@@ -304,6 +308,61 @@ const Overview = () => {
               </table>
             </div>
           </div>
+          <div className="bg-gray-800 p-6 rounded-lg shadow-md mt-8">
+        <h2 className="text-lg font-semibold text-gray-100 mb-4">
+          Participants with User Entry Status (True)
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="table-auto w-full text-gray-100">
+            <thead>
+              <tr className="bg-gray-600">
+                <th className="px-4 py-2 border border-gray-500">Name</th>
+                <th className="px-4 py-2 border border-gray-500">Email</th>
+                <th className="px-4 py-2 border border-gray-500">College</th>
+                <th className="px-4 py-2 border border-gray-500">Roll Number</th>
+                <th className="px-4 py-2 border border-gray-500">Phone Number</th>
+                <th className="px-4 py-2 border border-gray-500">Event Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {participantsWithUserEntry.length > 0 ? (
+                participantsWithUserEntry.map((participant, index) => (
+                  <tr key={index} className="hover:bg-gray-600">
+                    <td className="border px-4 py-2 border-gray-500">
+                      {participant.name}
+                    </td>
+                    <td className="border px-4 py-2 border-gray-500">
+                      {participant.email}
+                    </td>
+                    <td className="border px-4 py-2 border-gray-500">
+                      {participant.college}
+                    </td>
+                    <td className="border px-4 py-2 border-gray-500">
+                      {participant.rollNumber}
+                    </td>
+                    <td className="border px-4 py-2 border-gray-500">
+                      {participant.phoneNumber}
+                    </td>
+                    <td className="border px-4 py-2 border-gray-500">
+                      {participant.eventName}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="text-center py-4 text-gray-300"
+                  >
+                    No participants with user entry status.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+        
         </div>
       ) : (
         <div className="flex flex-col justify-center items-center h-screen">
@@ -348,3 +407,6 @@ const Overview = () => {
 };
 
 export default Overview;
+
+
+
