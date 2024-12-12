@@ -66,6 +66,55 @@ const Overview = () => {
   //   });
   // };
 
+  const downloadExcel = () => {
+    const data = eventParticipants.map((participant) => ({
+      Name: participant.name,
+      Email: participant.email,
+      College: participant.college,
+      "Roll Number": participant.rollNumber,
+      "Phone Number": participant.phoneNumber,
+      "Event Name": participant.eventName,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
+    XLSX.writeFile(workbook, "Participants.xlsx");
+  };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    const tableData = eventParticipants.map((participant) => [
+      participant.name,
+      participant.email,
+      participant.college,
+      participant.rollNumber,
+      participant.phoneNumber,
+      participant.eventName,
+    ]);
+
+    doc.text("Participants List", 14, 16);
+    doc.autoTable({
+      head: [
+        [
+          "Name",
+          "Email",
+          "College",
+          "Roll Number",
+          "Phone Number",
+          "Event Name",
+        ],
+      ],
+      body: tableData,
+    });
+
+    doc.save("Participants.pdf");
+  };
+
+  const onboardedCount = eventParticipants.filter(
+    (participant) => participant.userEntryStatus === "true"
+  ).length;
+
   const getTodayParticipants = (participants) => {
     const today = new Date();
     return participants.filter((participant) => {
@@ -309,60 +358,86 @@ const Overview = () => {
             </div>
           </div>
           <div className="bg-gray-800 p-6 rounded-lg shadow-md mt-8">
-        <h2 className="text-lg font-semibold text-gray-100 mb-4">
-          Participants with User Entry Status (True)
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="table-auto w-full text-gray-100">
-            <thead>
-              <tr className="bg-gray-600">
-                <th className="px-4 py-2 border border-gray-500">Name</th>
-                <th className="px-4 py-2 border border-gray-500">Email</th>
-                <th className="px-4 py-2 border border-gray-500">College</th>
-                <th className="px-4 py-2 border border-gray-500">Roll Number</th>
-                <th className="px-4 py-2 border border-gray-500">Phone Number</th>
-                <th className="px-4 py-2 border border-gray-500">Event Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {participantsWithUserEntry.length > 0 ? (
-                participantsWithUserEntry.map((participant, index) => (
-                  <tr key={index} className="hover:bg-gray-600">
-                    <td className="border px-4 py-2 border-gray-500">
-                      {participant.name}
-                    </td>
-                    <td className="border px-4 py-2 border-gray-500">
-                      {participant.email}
-                    </td>
-                    <td className="border px-4 py-2 border-gray-500">
-                      {participant.college}
-                    </td>
-                    <td className="border px-4 py-2 border-gray-500">
-                      {participant.rollNumber}
-                    </td>
-                    <td className="border px-4 py-2 border-gray-500">
-                      {participant.phoneNumber}
-                    </td>
-                    <td className="border px-4 py-2 border-gray-500">
-                      {participant.eventName}
-                    </td>
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">
+              Participants with User Entry Status (True)
+            </h2>
+            <div>
+              <div className="flex space-x-4 mt-6 mb-4">
+                <button
+                  onClick={downloadExcel}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Download Excel
+                </button>
+                <button
+                  onClick={downloadPDF}
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Download PDF
+                </button>
+                <div className="text-lg text-gray-100 font-bold">
+                  Onboarded Participants: {onboardedCount}
+                </div>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="table-auto w-full text-gray-100">
+                <thead>
+                  <tr className="bg-gray-600">
+                    <th className="px-4 py-2 border border-gray-500">Name</th>
+                    <th className="px-4 py-2 border border-gray-500">Email</th>
+                    <th className="px-4 py-2 border border-gray-500">
+                      College
+                    </th>
+                    <th className="px-4 py-2 border border-gray-500">
+                      Roll Number
+                    </th>
+                    <th className="px-4 py-2 border border-gray-500">
+                      Phone Number
+                    </th>
+                    <th className="px-4 py-2 border border-gray-500">
+                      Event Name
+                    </th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="text-center py-4 text-gray-300"
-                  >
-                    No participants with user entry status.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-        
+                </thead>
+                <tbody>
+                  {participantsWithUserEntry.length > 0 ? (
+                    participantsWithUserEntry.map((participant, index) => (
+                      <tr key={index} className="hover:bg-gray-600">
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.name}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.email}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.college}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.rollNumber}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.phoneNumber}
+                        </td>
+                        <td className="border px-4 py-2 border-gray-500">
+                          {participant.eventName}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-gray-300"
+                      >
+                        No participants with user entry status.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col justify-center items-center h-screen">
@@ -407,6 +482,3 @@ const Overview = () => {
 };
 
 export default Overview;
-
-
-
