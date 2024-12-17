@@ -90,6 +90,7 @@ const Participants = () => {
   const downloadExcel = () => {
     const filteredData = filteredParticipants.map((item) => ({
       Name: item.name,
+      "Roll Number": item.rollNumber || "N/A",
       Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
