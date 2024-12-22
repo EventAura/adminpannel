@@ -31,6 +31,7 @@ const EventDetailsChange = ({ viewMode = false }) => {
   const [freeEventCheckbox, setFreeEventCheckbox] = useState(false);
   const [isVirtual, setIsVirtual] = useState(false);
   const [validationError, setValidationError] = useState("");
+  const [eventStaus, setEventStatus] = useState("");
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -55,6 +56,7 @@ const EventDetailsChange = ({ viewMode = false }) => {
         setEventMailDescription(event.eventMailDescription);
         setIsVirtual(event.eventVenue === "Online Event");
         setFreeEventCheckbox(event.eventPrice === "0");
+        setEventStatus(event.eventStaus);
       } catch (error) {
         console.error(error);
       }
@@ -65,16 +67,16 @@ const EventDetailsChange = ({ viewMode = false }) => {
   const handleEventLastDate = (date) => {
     const currentDate = Date.now();
 
-    if (date < currentDate) {
-      setMessageLastDate("Please select a date after the current date");
-      setEventLastDate(null);
-    } else if (eventDate && date > eventDate) {
-      setMessageLastDate("Please select a date before or on the event date");
-      setEventLastDate(null);
-    } else {
-      setEventLastDate(date);
-      setMessageLastDate("");
-    }
+    // if (date < currentDate) {
+    //   setMessageLastDate("Please select a date after the current date");
+    //   setEventLastDate(null);
+    // } else if (eventDate && date > eventDate) {
+    //   setMessageLastDate("Please select a date before or on the event date");
+    //   setEventLastDate(null);
+    // } else {
+    setEventLastDate(date);
+    setMessageLastDate("");
+    // }
   };
 
   const handleEventDate = (date) => {
