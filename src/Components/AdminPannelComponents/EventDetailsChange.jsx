@@ -150,8 +150,8 @@ const EventDetailsChange = ({ viewMode = false }) => {
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
               required
-              className="w-full px-3 py-2 rounded-lg bg-gray-500 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 cursor-not-allowed"
-              disabled={viewMode}
+              className="w-full px-3 py-2 rounded-lg bg-gray-500 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 disabled:opacity-50"
+              disabled
             />
           </div>
           <div className="md:col-span-2">
@@ -297,9 +297,10 @@ const EventDetailsChange = ({ viewMode = false }) => {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder=""
-              className={`w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1`}
+              className="w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-100 focus:outline-none focus:ring-indigo-500 focus:ring-1 disabled:opacity-50"
               pattern="^[0-9]+$"
               title="Please enter a valid price (numbers only)"
+              disabled
             />
           </div>
 
