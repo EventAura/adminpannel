@@ -22,7 +22,7 @@ const LoginPage = () => {
     setSpinner(true);
     try {
       const response = await axios.post(
-        `https://tesract-server.onrender.com/event/login/${id}`,
+        `https://eventaura-server-api.onrender.com/event/login/${id}`,
         { username, password }
       );
       if (response.data.message) {
@@ -45,7 +45,7 @@ const LoginPage = () => {
     const fetchEventData = async () => {
       try {
         const response = await axios.get(
-          ` https://tesract-server.onrender.com/event/${id}`
+          ` https://eventaura-server-api.onrender.com/event/${id}`
         );
         setEventData(response.data.data);
       } catch (error) {
@@ -177,7 +177,6 @@ const LoginPage = () => {
                   <path d="M10 0c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z" />
                 </svg>
               )}
-
             </button>
           </div>
           <div className=" text-red-600 font-semibold">{error}</div>

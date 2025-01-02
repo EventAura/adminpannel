@@ -1,7 +1,7 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import {  isSameDay } from "date-fns";
+import { isSameDay } from "date-fns";
 
 import * as XLSX from "xlsx";
 import { FiDownload } from "react-icons/fi";
@@ -37,20 +37,20 @@ const FinancialReports = () => {
     const fetchData = async () => {
       try {
         const eventResponse = await axios.get(
-          `https://tesract-server.onrender.com/event/${eventSelector?.eventId}`
+          `https://eventaura-server-api.onrender.com/event/${eventSelector?.eventId}`
         );
         // console.log("Event Data:", eventResponse.data.data);
         setEventData(eventResponse.data.data);
 
         // const participantsResponse = await axios.get(
-        //   `https://tesract-server.onrender.com/participants/event/${eventSelector?.eventId}`
+        //   `https://eventaura-server-api.onrender.com/participants/event/${eventSelector?.eventId}`
         // );
         // // console.log("Participants Data:", participantsResponse.data);
         // setParticipants(participantsResponse.data);
         const fetchParticipantsApi = async () => {
           try {
             const response = await axios.get(
-              `https://tesract-server.onrender.com/participants/event/${eventSelector.eventId}`
+              `https://eventaura-server-api.onrender.com/participants/event/${eventSelector.eventId}`
             );
             setParticipants(response.data);
             setLoading(false);

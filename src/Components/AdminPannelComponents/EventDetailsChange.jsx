@@ -37,7 +37,7 @@ const EventDetailsChange = ({ viewMode = false }) => {
     const fetchEventDetails = async () => {
       try {
         const response = await axios.get(
-          `https://tesract-server.onrender.com/event/${eventSelector?.eventId}`
+          `https://eventaura-server-api.onrender.com/event/${eventSelector?.eventId}`
         );
         const event = response.data.data;
         setEventName(event.eventName);
@@ -112,7 +112,7 @@ const EventDetailsChange = ({ viewMode = false }) => {
 
     try {
       const response = await axios.patch(
-        `https://tesract-server.onrender.com/event/${eventSelector?.eventId}`,
+        `https://eventaura-server-api.onrender.com/event/${eventSelector?.eventId}`,
         data
       );
       // console.log(response);

@@ -2,16 +2,18 @@ import React from "react";
 import axios from "axios";
 import { useState } from "react";
 
-const ParticipantsModel = ({ isOpen, closeModal, value,eventId }) => {
+const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
   const [clicked, setClicked] = useState(false);
-  const handleClick = async() => {
-     const response= await axios.post(`https://tesract-server.onrender.com/api/phone-pay/status/M22FPMAZBNMJ5/${value.merchantTransactionId}/${eventId}`)
-      console.log(response)
-      setClicked(true)
-      setTimeout(() => {
-        setClicked(false)
-      }, 5000);
-      console.log("clicked")
+  const handleClick = async () => {
+    const response = await axios.post(
+      `https://eventaura-server-api.onrender.com/api/phone-pay/status/M22FPMAZBNMJ5/${value.merchantTransactionId}/${eventId}`
+    );
+    console.log(response);
+    setClicked(true);
+    setTimeout(() => {
+      setClicked(false);
+    }, 5000);
+    console.log("clicked");
   };
   return (
     <>
@@ -141,16 +143,21 @@ const ParticipantsModel = ({ isOpen, closeModal, value,eventId }) => {
                     Payment Message:{" "}
                     <span className="font-semibold text-gray-500">
                       {value?.paymentData?.data?.state}
-                        
                     </span>
                   </p>
                   <p className="text-base text-gray-700 dark:text-gray-100 py-1">
-                      send email again:{" "}
-                      <button onClick={handleClick} 
-                      className="font-semibold text-white border-1 p-2 ml-2 rounded-md bg-indigo-600">send email</button>
+                    send email again:{" "}
+                    <button
+                      onClick={handleClick}
+                      className="font-semibold text-white border-1 p-2 ml-2 rounded-md bg-indigo-600"
+                    >
+                      send email
+                    </button>
                   </p>
                   <p>
-                    {clicked && <div className="text-green-500">Email Sent</div>}
+                    {clicked && (
+                      <div className="text-green-500">Email Sent</div>
+                    )}
                   </p>
                 </div>
               </div>

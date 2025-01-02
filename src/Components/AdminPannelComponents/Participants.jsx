@@ -32,7 +32,7 @@ const Participants = () => {
     const fetchParticipantsApi = async () => {
       try {
         const response = await axios.get(
-          `https://tesract-server.onrender.com/participants/event/${eventSelector.eventId}`
+          `https://eventaura-server-api.onrender.com/participants/event/${eventSelector.eventId}`
         );
         setParticipants(response.data);
         setLoading(false);
@@ -51,9 +51,12 @@ const Participants = () => {
     )
     .filter((item) => {
       if (filter === "All") return true;
-      if (filter === "Paid") return item?.paymentData?.data?.state === "COMPLETED";
-      if (filter === "Pending") return item?.paymentData?.data?.state === "PENDING";
-      if (filter === "Failed") return item?.paymentData?.data?.state === "FAILED";
+      if (filter === "Paid")
+        return item?.paymentData?.data?.state === "COMPLETED";
+      if (filter === "Pending")
+        return item?.paymentData?.data?.state === "PENDING";
+      if (filter === "Failed")
+        return item?.paymentData?.data?.state === "FAILED";
       return true;
     });
 
@@ -67,7 +70,7 @@ const Participants = () => {
   //   const paidParticipants = participants.filter(
   //     (item) => item?.paymentData?.data?.state === "COMPLETED"
   //   );
-  
+
   //   const data = paidParticipants.map((item) => ({
   //     Name: item.name,
   //     Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
@@ -79,14 +82,14 @@ const Participants = () => {
   //     Email: item?.email,
   //     "Phone Number": item?.phoneNumber || "N/A",
   //   }));
-  
+
   //   const worksheet = XLSX.utils.json_to_sheet(data);
   //   const workbook = XLSX.utils.book_new();
   //   XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
-  
+
   //   XLSX.writeFile(workbook, `${generateFileName()}.xlsx`);
   // };
-  
+
   const downloadExcel = () => {
     const filteredData = filteredParticipants.map((item) => ({
       Name: item.name,
@@ -101,24 +104,23 @@ const Participants = () => {
       Email: item?.email,
       "Phone Number": item?.phoneNumber || "N/A",
     }));
-  
+
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
-  
+
     XLSX.writeFile(workbook, `${generateFileName()}.xlsx`);
   };
-  
 
   const downloadPDF = () => {
     const doc = new jsPDF();
-  
+
     doc.setFontSize(18);
     doc.text("Participants Report", 14, 22);
     doc.setFontSize(12);
     doc.text(`Event ID: ${eventSelector.eventId}`, 14, 30);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 36);
-  
+
     const tableData = filteredParticipants.map((item) => [
       item.name,
       new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
@@ -131,17 +133,18 @@ const Participants = () => {
       item?.email,
       item?.phoneNumber || "N/A",
     ]);
-  
+
     doc.autoTable({
-      head: [["Name", "Date", "Status", "Transaction ID", "Email", "Phone Number"]],
+      head: [
+        ["Name", "Date", "Status", "Transaction ID", "Email", "Phone Number"],
+      ],
       body: tableData,
       startY: 40,
       theme: "grid",
     });
-  
+
     doc.save(`${generateFileName()}.pdf`);
   };
-  
 
   if (loading) {
     return (
@@ -234,15 +237,15 @@ const Participants = () => {
             Paid
           </button>
           <button
-    className={`px-4 py-2 text-white rounded-lg ${
-      filter === "Pending"
-        ? "bg-yellow-500 hover:bg-yellow-600"
-        : "bg-gray-700 hover:bg-gray-600"
-    }`}
-    onClick={() => setFilter("Pending")}
-  >
-    Pending
-  </button>
+            className={`px-4 py-2 text-white rounded-lg ${
+              filter === "Pending"
+                ? "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+            onClick={() => setFilter("Pending")}
+          >
+            Pending
+          </button>
           <button
             className={`px-4 py-2 text-white rounded-lg ${
               filter === "Failed"
@@ -297,23 +300,23 @@ const Participants = () => {
                     )}
                   </td>
                   <td className="pr-6 py-4">
-                  <span
-                        className={`px-3 py-2 rounded-full font-semibold text-xs ${
-                          item?.paymentData?.data?.state === "COMPLETED"
-                            ? "text-green-500"
-                            : item?.paymentData?.data?.state === "PENDING"
-                            ? "text-yellow-500"
-                            : "text-red-500"
-                        }`}
-                      >
-                        {item?.paymentData?.data?.state === "PENDING"
-                          ? "PENDING"
-                          : item?.paymentData?.data?.state === "COMPLETED"
-                          ? "PAID"
-                          : item?.paymentData?.data?.state === "FAILED"
-                          ? "Failed"
-                          : "FAILED"}
-                      </span>
+                    <span
+                      className={`px-3 py-2 rounded-full font-semibold text-xs ${
+                        item?.paymentData?.data?.state === "COMPLETED"
+                          ? "text-green-500"
+                          : item?.paymentData?.data?.state === "PENDING"
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {item?.paymentData?.data?.state === "PENDING"
+                        ? "PENDING"
+                        : item?.paymentData?.data?.state === "COMPLETED"
+                        ? "PAID"
+                        : item?.paymentData?.data?.state === "FAILED"
+                        ? "Failed"
+                        : "FAILED"}
+                    </span>
                   </td>
                   <td className="pr-6 py-4">
                     {item?.paymentData?.data?.transactionId || "N/A"}
@@ -345,5 +348,3 @@ const Participants = () => {
 };
 
 export default Participants;
-
-

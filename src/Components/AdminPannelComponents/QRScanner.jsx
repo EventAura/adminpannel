@@ -16,7 +16,7 @@ const QRScanner = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://tesract-server.onrender.com/participant/status/${userId}`
+        `https://eventaura-server-api.onrender.com/participant/status/${userId}`
       );
       console.log("User status response:", response);
 
@@ -39,7 +39,7 @@ const QRScanner = () => {
   const updateUserStatus = async (userId) => {
     try {
       await axios.patch(
-        `https://tesract-server.onrender.com/participant/updateStatus/${userId}`
+        `https://eventaura-server-api.onrender.com/participant/updateStatus/${userId}`
       );
       setUserStatus("true");
       setCheckConfirmation(true);
