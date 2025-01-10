@@ -8,7 +8,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
     const response = await axios.post(
       `https://eventaura-server-api.onrender.com/api/phone-pay/status/M22FPMAZBNMJ5/${value.merchantTransactionId}/${eventId}`
     );
-    console.log(response);
+    // console.log(response);
     setClicked(true);
     setTimeout(() => {
       setClicked(false);
@@ -153,8 +153,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                 {/* Additional Info */}
                 <div className="bg-gray-900 p-4 rounded-lg shadow">
                   <h4 className="text-xl font-semibold text-indigo-400 mb-4 flex items-center gap-2">
-                    <span className="material-icons">info</span> Additional
-                    Information
+                    Additional Information
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -169,13 +168,21 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                         {value?.college || "N/A"}
                       </p>
                     </div>
+
                     <div>
                       <p className="text-gray-200">
                         <span className="font-bold text-white">Year:</span>{" "}
                         {value?.extraQuestions?.year || "N/A"}
                       </p>
                     </div>
-
+                    <div>
+                      <p className="text-gray-200">
+                        <span className="font-bold text-white">
+                          Roll Number:{" "}
+                        </span>{" "}
+                        {value?.rollNumber || "N/A"}
+                      </p>
+                    </div>
                     <div>
                       <p className="text-gray-200">
                         <span className="font-bold text-white">
