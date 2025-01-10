@@ -159,16 +159,23 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <p className="text-gray-200">
-                        <span className="font-bold text-white">Year:</span>{" "}
-                        {value?.extraQuestions?.year || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-200">
                         <span className="font-bold text-white">Education:</span>{" "}
                         {value?.extraQuestions?.educationBackground || "N/A"}
                       </p>
                     </div>
+                    <div>
+                      <p className="text-gray-200">
+                        <span className="font-bold text-white">College: </span>{" "}
+                        {value?.college || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-200">
+                        <span className="font-bold text-white">Year:</span>{" "}
+                        {value?.extraQuestions?.year || "N/A"}
+                      </p>
+                    </div>
+
                     <div>
                       <p className="text-gray-200">
                         <span className="font-bold text-white">
@@ -202,15 +209,15 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
 
                 {/* Action */}
                 <div>
+                  {clicked && (
+                    <div className="text-green-400 mt-2">Email Sent</div>
+                  )}
                   <button
                     onClick={handleClick}
                     className="font-semibold text-white border-1 p-2 rounded-md bg-indigo-600 hover:bg-indigo-500"
                   >
                     Send Email Again
                   </button>
-                  {clicked && (
-                    <div className="text-green-400 mt-2">Email Sent</div>
-                  )}
                 </div>
               </div>
             </div>

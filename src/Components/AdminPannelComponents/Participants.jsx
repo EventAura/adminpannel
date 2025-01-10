@@ -35,6 +35,7 @@ const Participants = () => {
           `https://eventaura-server-api.onrender.com/participants/event/${eventSelector.eventId}`
         );
         setParticipants(response.data);
+        console.log(response.data);
         setLoading(false);
       } catch (error) {
         console.log(error);
