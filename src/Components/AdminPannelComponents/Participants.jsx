@@ -58,6 +58,12 @@ const Participants = () => {
         return item?.paymentData?.data?.state === "PENDING";
       if (filter === "Failed")
         return item?.paymentData?.data?.state === "FAILED";
+      if (filter === "Other")
+        return (
+          item?.paymentData?.data?.state !== "PENDING" &&
+          item?.paymentData?.data?.state !== "COMPLETED" &&
+          item?.paymentData?.data?.state !== "FAILED"
+        );
       return true;
     });
 
@@ -257,7 +263,20 @@ const Participants = () => {
           >
             Failed
           </button>
+
+          <button
+          className={`px-4 py-2 text-white rounded-lg ${
+            filter === "Other"
+              ? "bg-purple-600 hover:bg-purple-700"
+              : "bg-gray-700 hover:bg-gray-600"
+          }`}
+          onClick={() => setFilter("Other")}
+        >
+          Other
+        </button>
         </div>
+            
+        
 
         <div className="mt-6 flex justify-end">
           <button
@@ -307,7 +326,10 @@ const Participants = () => {
                           ? "text-green-500"
                           : item?.paymentData?.data?.state === "PENDING"
                           ? "text-yellow-500"
-                          : "text-red-500"
+                          : item?.paymentData?.data?.state === "FAILED"
+                          ? "text-red-500"
+                          : "text-purple-500"
+                          
                       }`}
                     >
                       {item?.paymentData?.data?.state === "PENDING"
@@ -315,8 +337,8 @@ const Participants = () => {
                         : item?.paymentData?.data?.state === "COMPLETED"
                         ? "PAID"
                         : item?.paymentData?.data?.state === "FAILED"
-                        ? "Failed"
-                        : "FAILED"}
+                        ? "FAILED"
+                        : "OTHER"}
                     </span>
                   </td>
                   <td className="pr-6 py-4">
