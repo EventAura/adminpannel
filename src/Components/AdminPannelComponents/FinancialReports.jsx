@@ -104,11 +104,11 @@ const FinancialReports = () => {
             }),
             Participants: numParticipants,
             Amount:
-              // numParticipants * eventData?.eventPrice -
-              // numParticipants * (eventData?.eventPrice * 0.02 + 5)
-              // (numParticipants * eventData?.eventPrice).toFixed(2),
               numParticipants * eventData?.eventPrice -
-              numParticipants * (eventData?.eventPrice * 0.02).toFixed(2),
+              numParticipants * (eventData?.eventPrice * 0.02 + 5)
+              // (numParticipants * eventData?.eventPrice).toFixed(2),
+              // numParticipants * eventData?.eventPrice -
+              // numParticipants * (eventData?.eventPrice * 0.02).toFixed(2),
           };
         }
         return null;
@@ -135,11 +135,11 @@ const FinancialReports = () => {
               day: "numeric",
             }),
             numParticipants,
-            // numParticipants * eventData?.eventPrice -
-            // numParticipants * (eventData?.eventPrice * 0.02 + 5)
-            // (numParticipants * eventData?.eventPrice).toFixed(2),
             numParticipants * eventData?.eventPrice -
-              numParticipants * (eventData?.eventPrice * 0.02).toFixed(2),
+            numParticipants * (eventData?.eventPrice * 0.02 + 5)
+            // (numParticipants * eventData?.eventPrice).toFixed(2),
+            // numParticipants * eventData?.eventPrice -
+            //   numParticipants * (eventData?.eventPrice * 0.02).toFixed(2),
           ];
         }
         return null;
@@ -209,17 +209,17 @@ const FinancialReports = () => {
                   </td>
                   <td className="py-4 px-6 border-b border-gray-600">
                     ₹
-                    {/* {(
+                    {(
                       numParticipants * eventData?.eventPrice -
                       (
                         numParticipants *
                         (eventData?.eventPrice * 0.02 + 5)
                       ).toFixed(2)
-                    ).toFixed(2)} */}
-                    {(
+                    ).toFixed(2)}
+                    {/* {(
                       numParticipants * eventData?.eventPrice -
                       numParticipants * (eventData?.eventPrice * 0.02)
-                    ).toFixed(2)}
+                    ).toFixed(2)} */}
                   </td>
                 </tr>
               );

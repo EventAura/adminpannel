@@ -48,8 +48,8 @@ const Overview = () => {
     const percentageDeduction = totalRevenue * 0.02;
     const fixedDeduction = totalParticipants * 5;
 
-    // const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
-    const finalTotal = totalRevenue - percentageDeduction;
+    const finalTotal = totalRevenue - (percentageDeduction + fixedDeduction);
+    // const finalTotal = totalRevenue - percentageDeduction;
 
     return finalTotal.toLocaleString();
   };
