@@ -99,23 +99,40 @@ const Participants = () => {
 
   const downloadExcel = () => {
     const filteredData = filteredParticipants.map((item) => ({
-      Name: item.name,
-      "Roll Number": item.rollNumber || "N/A",
-      Date: new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      Status: item?.paymentData?.data?.state || "N/A",
-      "Transaction ID": item?.paymentData?.data?.transactionId || "N/A",
-      Email: item?.email,
-      "Phone Number": item?.phoneNumber || "N/A",
+      NAME: item.name,
+      "PHONE NUMBER": item?.phoneNumber || "N/A",
+      EMAIL: item?.email || "N/A",
+      STATUS: item?.paymentData?.data?.state || "N/A",
+      "TRANSACTION ID": item?.paymentData?.data?.transactionId || "N/A",
+      "MERCHANT TRANSACTION ID":
+        item?.paymentData?.data?.merchantTransactionId || "N/A",
+      "PAYMENT TYPE": item?.paymentData?.data?.paymentInstrument?.type || "N/A",
+      "EDUCATION BACKGROUND":
+        item?.extraQuestions?.educationBackground || "N/A",
+      COLLEGE: item?.college || "N/A",
+      YEAR: item?.extraQuestions?.year || "N/A",
+      "ROLL NUMBER": item?.rollNumber || "N/A",
+      "HEARD FROM": item?.extraQuestions?.heardFrom || "N/A",
+      "SPECIFIC TOPICS": item?.extraQuestions?.specificTopics || "N/A",
+      "SPECIAL ALLERGIES": item?.extraQuestions?.specialAllergies || "N/A",
+      "COMMUNITY ANSWER": item?.extraQuestions?.communityAnswer || "N/A",
+      "REGISTRATION DATE": item?.userRegistrationDate
+        ? new Date(item.userRegistrationDate).toLocaleString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })
+        : "N/A", // Use "N/A" for missing registration dates
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
 
+    // Ensure the column names are set properly
     XLSX.writeFile(workbook, `${generateFileName()}.xlsx`);
   };
 
@@ -130,25 +147,21 @@ const Participants = () => {
 
     const tableData = filteredParticipants.map((item) => [
       item.name,
-      new Date(item.userRegistrationDate).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
+      item?.phoneNumber || "N/A",
+      item?.email || "N/A",
       item?.paymentData?.data?.state || "N/A",
       item?.paymentData?.data?.transactionId || "N/A",
-      item?.email,
-      item?.phoneNumber || "N/A",
     ]);
 
     doc.autoTable({
-      head: [
-        ["Name", "Date", "Status", "Transaction ID", "Email", "Phone Number"],
-      ],
+      head: [["Name", "Phone Number", "Email", "Status", "Transaction ID"]],
       body: tableData,
       startY: 40,
       theme: "grid",
     });
+
+    doc.setFontSize(10); // Smaller font for footer
+    doc.text("Powered by EventAura", 14, doc.internal.pageSize.height - 10); // Footer placement
 
     doc.save(`${generateFileName()}.pdf`);
   };
@@ -265,18 +278,16 @@ const Participants = () => {
           </button>
 
           <button
-          className={`px-4 py-2 text-white rounded-lg ${
-            filter === "Other"
-              ? "bg-purple-600 hover:bg-purple-700"
-              : "bg-gray-700 hover:bg-gray-600"
-          }`}
-          onClick={() => setFilter("Other")}
-        >
-          Other
-        </button>
+            className={`px-4 py-2 text-white rounded-lg ${
+              filter === "Other"
+                ? "bg-purple-600 hover:bg-purple-700"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+            onClick={() => setFilter("Other")}
+          >
+            Other
+          </button>
         </div>
-            
-        
 
         <div className="mt-6 flex justify-end">
           <button
@@ -329,7 +340,6 @@ const Participants = () => {
                           : item?.paymentData?.data?.state === "FAILED"
                           ? "text-red-500"
                           : "text-purple-500"
-                          
                       }`}
                     >
                       {item?.paymentData?.data?.state === "PENDING"
