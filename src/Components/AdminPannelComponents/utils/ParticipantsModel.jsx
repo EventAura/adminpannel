@@ -109,15 +109,21 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                         </span>{" "}
                         <span
                           className={`text-sm px-2 py-1 rounded ${
-                            value?.paymentData?.data?.state === "Completed"
+                            value?.paymentData?.data?.state === "COMPLETED"
                               ? "bg-green-500 text-white"
-                              : value?.paymentData?.data?.state === "Failed"
+                              : value?.paymentData?.data?.state === "FAILED"
                               ? "bg-red-500 text-white"
                               : "bg-yellow-500 text-gray-800"
                           }`}
                         >
                           {value?.paymentData?.data?.state || "N/A"}
                         </span>
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-200">
+                        <span className="font-bold text-white">Ammount:</span>{" "}
+                        {value?.eventPrice || "N/A"}
                       </p>
                     </div>
                     <div>
