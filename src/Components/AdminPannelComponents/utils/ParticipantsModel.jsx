@@ -4,6 +4,7 @@ import { useState } from "react";
 
 const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
   const [clicked, setClicked] = useState(false);
+  const [showQrCode, setShowQrCode] = useState(false);
   const handleClick = async () => {
     const response = await axios.post(
       `https://eventaura-server-api.onrender.com/api/phone-pay/status/M22FPMAZBNMJ5/${value.merchantTransactionId}/${eventId}`
@@ -219,7 +220,27 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                     </div>
                   </div>
                 </div>
-
+                {/* Qr code button */}
+                <div className="bg-gray-900 p-4 rounded-lg shadow">
+                  <h4 className="text-xl font-semibold text-indigo-400 mb-4">
+                    QR Code
+                  </h4>
+                  <button
+                    onClick={() => setShowQrCode((prev) => !prev)}
+                    className="font-semibold text-white border-1 p-2 rounded-md bg-indigo-600 hover:bg-indigo-500"
+                  >
+                    {showQrCode ? "Hide QR Code" : "Show QR Code"}
+                  </button>
+                  {showQrCode && (
+                    <div className="mt-4">
+                      <img
+                        src={value?.qrCode || ""}
+                        alt="QR Code"
+                        className="w-40 h-40"
+                      />
+                    </div>
+                  )}
+                </div>
                 {/* Action */}
                 <div>
                   {clicked && (
