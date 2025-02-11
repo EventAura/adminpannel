@@ -37,7 +37,7 @@ const FinancialReports = () => {
     const fetchData = async () => {
       try {
         const eventResponse = await axios.get(
-          `https://https://api.eventaura.tech/event/${eventSelector?.eventId}`
+          `https://api.eventaura.tech/event/${eventSelector?.eventId}`
         );
         // console.log("Event Data:", eventResponse.data.data);
         setEventData(eventResponse.data.data);
@@ -50,7 +50,7 @@ const FinancialReports = () => {
         const fetchParticipantsApi = async () => {
           try {
             const response = await axios.get(
-              `https://https://api.eventaura.tech/participants/event/${eventSelector.eventId}`
+              `https://api.eventaura.tech/participants/event/${eventSelector.eventId}`
             );
             setParticipants(response.data);
             setLoading(false);
