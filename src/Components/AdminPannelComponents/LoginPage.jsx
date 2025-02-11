@@ -45,7 +45,7 @@ const LoginPage = () => {
     const fetchEventData = async () => {
       try {
         const response = await axios.get(
-          ` https://eventaura-server-api.onrender.com/event/${id}`
+          ` https://api.eventaura.tech/event/${id}`
         );
         setEventData(response.data.data);
       } catch (error) {
