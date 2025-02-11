@@ -37,7 +37,7 @@ const EventDetailsChange = ({ viewMode = false }) => {
     const fetchEventDetails = async () => {
       try {
         const response = await axios.get(
-          `https://eventaura-server-api.onrender.com/event/${eventSelector?.eventId}`
+          `https://api.eventaura.tech/event/${eventSelector?.eventId}`
         );
         const event = response.data.data;
         setEventName(event.eventName);

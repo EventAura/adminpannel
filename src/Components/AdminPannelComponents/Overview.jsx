@@ -132,7 +132,7 @@ const Overview = () => {
     const fetchEventData = async () => {
       try {
         const eventResponse = await axios.get(
-          `https://eventaura-server-api.onrender.com/event/${eventSelector.eventId}`
+          `https://api.eventaura.tech/event/${eventSelector.eventId}`
         );
         setEventData(eventResponse.data.data);
       } catch (error) {
@@ -143,7 +143,7 @@ const Overview = () => {
     const fetchParticipantsData = async () => {
       try {
         const participantsResponse = await axios.get(
-          `https://eventaura-server-api.onrender.com/participants/event/${eventSelector.eventId}`
+          `https://api.eventaura.tech/participants/event/${eventSelector.eventId}`
         );
         setEventParticipants(participantsResponse.data);
       } catch (error) {

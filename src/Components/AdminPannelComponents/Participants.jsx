@@ -32,7 +32,7 @@ const Participants = () => {
     const fetchParticipantsApi = async () => {
       try {
         const response = await axios.get(
-          `https://eventaura-server-api.onrender.com/participants/event/${eventSelector.eventId}`
+          `https://api.eventaura.tech/participants/event/${eventSelector.eventId}`
         );
         setParticipants(response.data);
         console.log(response.data);

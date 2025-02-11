@@ -22,7 +22,7 @@ const LoginPage = () => {
     setSpinner(true);
     try {
       const response = await axios.post(
-        `https://eventaura-server-api.onrender.com/event/login/${id}`,
+        `https://api.eventaura.tech/event/login/${id}`,
         { username, password }
       );
       if (response.data.message) {
