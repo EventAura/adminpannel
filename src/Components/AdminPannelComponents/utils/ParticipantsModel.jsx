@@ -213,7 +213,8 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                     <div>
                       <p className="text-gray-200">
                         <span className="font-bold text-white">
-                          Community Answer:
+                          {/* Community Answer: */}
+                          Answer:
                         </span>{" "}
                         {value?.extraQuestions?.communityAnswer || "N/A"}
                       </p>
