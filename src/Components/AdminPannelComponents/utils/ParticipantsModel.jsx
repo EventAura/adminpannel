@@ -198,15 +198,12 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                         {value?.extraQuestions?.heardFrom || "N/A"}
                       </p>
                     </div>
+
                     <div>
                       <p className="text-gray-200">
-                        <span className="font-bold text-white">Topics:</span>{" "}
-                        {value?.extraQuestions?.specificTopics || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-200">
-                        <span className="font-bold text-white">Allergies:</span>{" "}
+                        <span className="font-bold text-white">
+                          Event Expectations
+                        </span>{" "}
                         {value?.extraQuestions?.specialAllergies || "N/A"}
                       </p>
                     </div>
@@ -214,7 +211,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                       <p className="text-gray-200">
                         <span className="font-bold text-white">
                           {/* Community Answer: */}
-                          Answer:
+                          Heard From Answer:
                         </span>{" "}
                         {value?.extraQuestions?.communityAnswer || "N/A"}
                       </p>
