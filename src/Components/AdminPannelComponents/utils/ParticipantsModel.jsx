@@ -202,7 +202,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
                     <div>
                       <p className="text-gray-200">
                         <span className="font-bold text-white">
-                          Event Expectations
+                          Event Expectations:
                         </span>{" "}
                         {value?.extraQuestions?.specialAllergies || "N/A"}
                       </p>
