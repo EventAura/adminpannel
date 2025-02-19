@@ -7,7 +7,7 @@ const ParticipantsModel = ({ isOpen, closeModal, value, eventId }) => {
   const [showQrCode, setShowQrCode] = useState(false);
   const handleClick = async () => {
     const response = await axios.post(
-      `https://eventaura-server-api.onrender.com/api/phone-pay/status/M22FPMAZBNMJ5/${value.merchantTransactionId}/${eventId}`
+      `https://api.eventaura.tech/api/phone-pay/status/M22FPMAZBNMJ5/${value.merchantTransactionId}/${eventId}`
     );
     // console.log(response);
     setClicked(true);
