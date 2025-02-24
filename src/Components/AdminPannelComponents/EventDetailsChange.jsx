@@ -112,7 +112,7 @@ const EventDetailsChange = ({ viewMode = false }) => {
 
     try {
       const response = await axios.patch(
-        `https://eventaura-server-api.onrender.com/event/${eventSelector?.eventId}`,
+        `https://api.eventaura.tech/event/${eventSelector?.eventId}`,
         data
       );
       // console.log(response);
