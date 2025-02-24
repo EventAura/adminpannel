@@ -58,6 +58,8 @@ const Participants = () => {
         return item?.paymentData?.data?.state === "PENDING";
       if (filter === "Failed")
         return item?.paymentData?.data?.state === "FAILED";
+      if(filter === "Coupon")
+        return item?.extraQuestions?.isCouponValid && item?.paymentData?.data?.state === "COMPLETED";
       if (filter === "Other")
         return (
           item?.paymentData?.data?.state !== "PENDING" &&
@@ -126,6 +128,7 @@ const Participants = () => {
             second: "2-digit",
           })
         : "N/A", // Use "N/A" for missing registration dates
+        
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
@@ -287,9 +290,27 @@ const Participants = () => {
           >
             Other
           </button>
+          <button
+            className={`px-4 py-2 text-white rounded-lg ${
+              filter === "Coupon"
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+            onClick={() => setFilter("Coupon")}
+          >
+            Coupon Valid
+          </button>
         </div>
 
         <div className="mt-6 flex justify-end">
+
+          <div className="text-gray-100 font-semibold  mr-2 mt-2">
+            count:
+            <span className="text-gray-300 font-normal ml-2">
+              {filteredParticipants.length}
+            </span>
+          </div>
+          
           <button
             className="text-white bg-indigo-600 p-2 rounded-md hover:bg-indigo-700 flex items-center mr-2"
             onClick={downloadExcel}
@@ -316,6 +337,9 @@ const Participants = () => {
                 <th className="py-4 pr-6"></th>
               </tr>
             </thead>
+            
+
+
             <tbody className="text-gray-100 divide-y divide-gray-700">
               {filteredParticipants.map((item, idx) => (
                 <tr key={idx} className="hover:bg-gray-800">
