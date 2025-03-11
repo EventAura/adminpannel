@@ -134,7 +134,8 @@ const QRScanner = () => {
       ) : scanResult ? (
         <div className="mt-8 w-96 bg-gray-800 p-6 rounded-lg shadow-lg text-gray-200">
           {data?.user ? (
-            data?.user?.paymentData?.data.responseCode === "SUCCESS" ? (
+            data?.user?.paymentData?.data.responseCode === "SUCCESS" &&
+            data?.user?.paymentData?.data.state !== "REFUNDED" ? ( // ✅ Only allow successful, non-refunded payments
               data?.user?.userEntryStatus === "true" ? (
                 <div>
                   <h3 className="text-2xl font-semibold text-green-500">
@@ -191,38 +192,22 @@ const QRScanner = () => {
                 </div>
               )
             ) : (
-              <div>
+              <>
                 <h3 className="text-2xl font-semibold text-red-500">
-                  ❌ Payment Failed!{" "}
-                  {data?.user?.name ? data.user.name : "User"} Cannot Check In
-                </h3>
-                <h3 className="text-xl font-semibold">
-                  {data?.user?.email ? data.user.email : "N/A"}
+                  ❌ Payment Failed or Refunded! Cannot Check In
                 </h3>
                 <button
                   onClick={resetScanner}
-                  className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
+                  className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
                 >
                   Scan Next
                 </button>
-              </div>
+              </>
             )
           ) : (
-            <div>
-              <h3 className="text-2xl font-semibold text-red-500">
-                ❌ No User Found
-              </h3>
-              <p className="text-lg text-gray-400 mt-4">
-                The scanned QR code does not correspond to any user in the
-                system.
-              </p>
-              <button
-                onClick={resetScanner}
-                className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-all"
-              >
-                Scan Next
-              </button>
-            </div>
+            <h3 className="text-2xl font-semibold text-red-500">
+              ❌ No User Found
+            </h3>
           )}
         </div>
       ) : (
@@ -230,13 +215,6 @@ const QRScanner = () => {
           Point your camera at a QR code to scan.
         </p>
       )}
-
-      <footer className="mt-12 text-center">
-        <p className="text-sm text-gray-500">
-          Powered by{" "}
-          <span className="font-bold text-indigo-600">Html5-QRCode</span>
-        </p>
-      </footer>
     </div>
   );
 };
