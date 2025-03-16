@@ -60,8 +60,6 @@ const Participants = () => {
         return item?.paymentData?.data?.state === "FAILED";
       if(filter === "Coupon")
         return item?.extraQuestions?.isCouponValid && item?.paymentData?.data?.state === "COMPLETED";
-      if (filter === "Refunded")
-        return item?.paymentData?.data?.state === "REFUNDED";
       if (filter === "Other")
         return (
           item?.paymentData?.data?.state !== "PENDING" &&
@@ -281,19 +279,6 @@ const Participants = () => {
           >
             Failed
           </button>
-
-          <button
-            className={`px-4 py-2 text-white rounded-lg ${
-              filter === "Refunded"
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-gray-700 hover:bg-gray-600"
-            }`}
-            onClick={() => setFilter("Refunded")}
-          >
-            Refunded
-          </button>
-
-          
 
           <button
             className={`px-4 py-2 text-white rounded-lg ${
